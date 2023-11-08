@@ -31,8 +31,7 @@ class SubjectModel extends DbConnection{
         
         if (mysqli_num_rows($queryResult) > 0) {
             return $queryResult;
-        }
-        
+        }        
         return null;
     }
     
@@ -44,8 +43,7 @@ class SubjectModel extends DbConnection{
         
         if (mysqli_num_rows($queryResult) > 0) {
             return $queryResult;
-        }
-        
+        }        
         return null;
     }
         
