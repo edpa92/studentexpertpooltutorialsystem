@@ -86,6 +86,7 @@
       </div> 
 
       <div class="col-12">
+        <a href="Lessons.php" class="btn btn-primary">Back</a>
         <button type="submit" class="btn btn-primary">Save</button>
       </div>
     </form>
