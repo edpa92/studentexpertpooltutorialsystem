@@ -18,6 +18,9 @@
           
           <?php if($_SESSION["RoleSEPTS"]=="Instructor"){
           ?>
+          <li><a href="Lessons.php" class="nav-link px-2 link-body-emphasis">Lessons</a></li>
+          <li><a href="LearningMaterials.php" class="nav-link px-2 link-body-emphasis">Materials</a></li>
+          <li><a href="#" class="nav-link px-2 link-body-emphasis">Classes</a></li>
 
           <?php }?>
           
