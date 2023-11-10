@@ -28,7 +28,7 @@ class InstructorModel extends DbConnection{
     public function EditPhoto($id, $Photo)
     {
         $sql = "UPDATE `employees_table` SET `Photo`='$Photo' WHERE `EmpKey`='$id'";
-        
+        $_SESSION["PhotoSEPTS"] =$Photo;
         return $this->getConnection()->query($sql);
     }
     

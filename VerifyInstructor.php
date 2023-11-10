@@ -6,10 +6,10 @@
         exit();
     }
     require_once ('model/InstructorModel.php');
-    $ins=new InstructorModel();
+    $stud=new InstructorModel();
     
     if (isset($_GET['id']) && $_GET['id']!="") {
-        $ins->Verify($ins->escapeString($_GET['id']));
+        $stud->Verify($stud->escapeString($_GET['id']));
     }
     
     header("location: UserManagment.php?u=i&m=Instructor Successfully verified!");

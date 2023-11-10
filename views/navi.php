@@ -20,7 +20,6 @@
           ?>
           <li><a href="Lessons.php" class="nav-link px-2 link-body-emphasis">Lessons</a></li>
           <li><a href="LearningMaterials.php" class="nav-link px-2 link-body-emphasis">Materials</a></li>
-          <li><a href="#" class="nav-link px-2 link-body-emphasis">Classes</a></li>
 
           <?php }?>
           
@@ -42,7 +41,7 @@
           </span>(<small><?=$_SESSION["RoleSEPTS"];?></small>)
           </a>
           <ul class="dropdown-menu text-small">
-            <li><a class="dropdown-item <?=($_SESSION['RoleSEPTS']=='Admin'?'d-none':'');?>" href="<?=($_SESSION['RoleSEPTS']=='Instructor'?'InstructorProfile.php':''); ?>">Profile</a></li>
+            <li><a class="dropdown-item <?=($_SESSION['RoleSEPTS']=='Admin'?'d-none':'');?>" href="<?=($_SESSION['RoleSEPTS']=='Instructor'?'InstructorProfile.php':'StudentProfile.php'); ?>">Profile</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="logout.php">Sign out</a></li>
           </ul>

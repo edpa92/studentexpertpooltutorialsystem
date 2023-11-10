@@ -41,36 +41,37 @@ class StudentModel extends DbConnection{
         return $this->getConnection()->query($sql);
     }
     
-    
-    
-    
-    public function EditStudent($id, $Firstname, $Middlename, $Lastname, $DateofBirth, $Gender, $ContactNumber, $FatherName, $Mothername, $GuardianName, $EmergencyContact, $CompeleteAddress, $PostalCode, $Image, $type)
-    {
-      
-       $sql = "UPDATE `student_table` SET `Firstname`='$Firstname',`Middlename`='$Middlename',`Lastname`='$Lastname',`DateofBirth`='$DateofBirth',`Gender`='$Gender',`ContactNumber`='$ContactNumber',`FatherName`='$FatherName',`Mothername`='$Mothername',`GuardianName`='$GuardianName',`EmergencyContact`='$EmergencyContact',`CompeleteAddress`='$CompeleteAddress',`PostalCode`='$PostalCode',`Image`='$Image', `StudentType`='$type' WHERE `StudentId`=$id";
-        
-       if ($Image=="") {
-           $sql = "UPDATE `student_table` SET `Firstname`='$Firstname',`Middlename`='$Middlename',`Lastname`='$Lastname',`DateofBirth`='$DateofBirth',`Gender`='$Gender',`ContactNumber`='$ContactNumber',`FatherName`='$FatherName',`Mothername`='$Mothername',`GuardianName`='$GuardianName',`EmergencyContact`='$EmergencyContact',`CompeleteAddress`='$CompeleteAddress',`PostalCode`='$PostalCode', `StudentType`='$type' WHERE `StudentId`=$id";
-       }
-       
-       if ($Image!=="") {
-           $_SESSION["PhotoCSHS"] =$Image;
-       }
-        
-        return $this->getConnection()->query($sql);
-    }
-       
     public function getStudent($id)
     {
-        $sql = "SELECT `StudentId`, `Firstname`, `Middlename`, `Lastname`, `DateofBirth`, `Gender`, `ContactNumber`, `Email`, `EmailVerified`, `VerificationCode`, `FatherName`, `Mothername`, `GuardianName`, `EmergencyContact`, `CompeleteAddress`, `PostalCode`, `Image`,   `DateRegistered`, `Status`, `StudentType` FROM `student_table` WHERE `StudentId`=$id";
+        $sql = "SELECT `StudentId`, `StudentIDNo`, `Firstname`, `Middlename`, `Lastname`, `NameExt`, `DateofBirth`, `Gender`, `ContactNumber`, `Email`, `EmailVerified`, `VerificationCode`, `Image`, `DateRegistered`, `Status`, `StudentType` FROM `student_table` WHERE `StudentId`=$id";
         $queryResult = $this->getConnection()->query($sql);
-
+        
         if (mysqli_num_rows($queryResult) > 0) {
             return $queryResult->fetch_assoc();
         }
-
+        
         return null;
     }
+        
+    public function EditStudent($id, $studidno, $Firstname, $Middlename, $Lastname, $NameEx, $Gender, $ContactNumber)
+    {
+      
+       $sql = "UPDATE `student_table` SET `StudentIDNo`='$studidno',`Firstname`='$Firstname',`Middlename`='$Middlename',
+`Lastname`='$Lastname',`NameExt`='$NameEx',
+`Gender`='$Gender',`ContactNumber`='$ContactNumber' WHERE `StudentId`=$id";
+        
+        return $this->getConnection()->query($sql);
+    }
+    
+    public function EditPhoto($id, $Photo)
+    {
+        $sql = "UPDATE `student_table` SET `Image`='$Photo' WHERE `StudentId`='$id'";
+        $_SESSION["PhotoSEPTS"] =$Photo;
+        return $this->getConnection()->query($sql);
+    }
+    
+    
+    
     
     public function StudentEmailExist($email)
     {

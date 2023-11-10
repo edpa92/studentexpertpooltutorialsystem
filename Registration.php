@@ -7,7 +7,7 @@ if (isset($_SESSION["loggedinSEPTS"])) {
 }
 
 require_once ('model/InstructorModel.php');
-$ins=new InstructorModel();
+$stud=new InstructorModel();
 
 require_once ('model/UserModel.php');
 $use=new UserModel();
@@ -24,46 +24,46 @@ require_once("views/navi.php");
 <div class="w-50">
 <h2 class="text-center">REGISTRATION</h2>
 <?php 
-if ($ins->isRequestPost()) {
-    $pw1=$ins->escapeString($_POST['Password1']);
-    $pw2=$ins->escapeString($_POST['Password2']);
-    $cap=$ins->escapeString($_POST['captcha']);
+if ($stud->isRequestPost()) {
+    $pw1=$stud->escapeString($_POST['Password1']);
+    $pw2=$stud->escapeString($_POST['Password2']);
+    $cap=$stud->escapeString($_POST['captcha']);
     
     
     if ($pw1==$pw2) {
         if ($cap==$_SESSION['captcha']) {
             
-            $ASRadio=$ins->escapeString($_POST['AsRadio']);
+            $ASRadio=$stud->escapeString($_POST['AsRadio']);
             if ($ASRadio==8) {
                 
-               $id= $ins->Add(
-                    $ins->escapeString($_POST['fname']),
-                    $ins->escapeString($_POST['mname']),
-                    $ins->escapeString($_POST['lname']),
-                    $ins->escapeString($_POST['xname']),
-                    $ins->escapeString($_POST['gender']),
-                    $ins->escapeString($_POST['contact']),
-                    $ins->escapeString($_POST['email']),
+               $id= $stud->Add(
+                    $stud->escapeString($_POST['fname']),
+                    $stud->escapeString($_POST['mname']),
+                    $stud->escapeString($_POST['lname']),
+                    $stud->escapeString($_POST['xname']),
+                    $stud->escapeString($_POST['gender']),
+                    $stud->escapeString($_POST['contact']),
+                    $stud->escapeString($_POST['email']),
                    "active",
-                   $ins->escapeString($_POST['idno']),);
+                   $stud->escapeString($_POST['idno']),);
                
                if ($id>0) {
-                   $use->AddEmpUser($id, $ins->escapeString($_POST['email']), 8, $pw2);
+                   $use->AddEmpUser($id, $stud->escapeString($_POST['email']), 8, $pw2);
                }
                 
             }else {
                 $id=$stud->addStudent(
-                    $ins->escapeString($_POST['idno']),
-                    $ins->escapeString($_POST['fname']),
-                    $ins->escapeString($_POST['mname']),
-                    $ins->escapeString($_POST['lname']),
-                    $ins->escapeString($_POST['xname']),
-                    $ins->escapeString($_POST['email']),
-                    $ins->escapeString($_POST['contact']),
-                    $ins->escapeString($_POST['gender']));                
+                    $stud->escapeString($_POST['idno']),
+                    $stud->escapeString($_POST['fname']),
+                    $stud->escapeString($_POST['mname']),
+                    $stud->escapeString($_POST['lname']),
+                    $stud->escapeString($_POST['xname']),
+                    $stud->escapeString($_POST['email']),
+                    $stud->escapeString($_POST['contact']),
+                    $stud->escapeString($_POST['gender']));                
                 
                 if ($id>0) {
-                    $use->AddStudentUser($id, "active", $pw2, $ins->escapeString($_POST['email']));
+                    $use->AddStudentUser($id, "active", $pw2, $stud->escapeString($_POST['email']));
                 }
             }
             
@@ -142,7 +142,7 @@ if ($ins->isRequestPost()) {
     <input type="password" class="form-control" id="Password2" name="Password2" required>
   </div>
   <?php 
-$ins->generateCaptchaStringToSession(7);
+$stud->generateCaptchaStringToSession(7);
 ?>
  <div class="col-md-12 mb-2 text-center">
     <img width="130" src="model/Captcha.php">
