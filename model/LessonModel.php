@@ -48,10 +48,17 @@ FROM `topic_table`
         return null;
     }
     
-    public function getAllActive($insId)
+    public function getAllActive($insId, $subid)
     {
-        $sql = "SELECT `TopicNo`, `SubjectId`, `TopicDescription`, `InstructorId`, `Status` FROM 
-`topic_table` WHERE Status='1' AND `InstructorId`='$insId'";
+        $sql = "SELECT `TopicNo`, `SubjectId`, `TopicDescription`, `InstructorId`, `topic_table`.`Status`, `subject_table`.`Subject` FROM 
+`topic_table` LEFT JOIN `subject_table` ON `topic_table`.`SubjectId` = `subject_table`.`SubjectCode`
+ WHERE `topic_table`.Status='1' AND `InstructorId`='$insId'";
+        
+        if ($subid>0) {
+            $sql = "SELECT `TopicNo`, `SubjectId`, `TopicDescription`, `InstructorId`, `topic_table`.`Status`,`subject_table`.`Subject` FROM
+`topic_table` LEFT JOIN `subject_table` ON `topic_table`.`SubjectId` = `subject_table`.`SubjectCode`
+ WHERE `topic_table`.Status='1' AND `InstructorId`='$insId' AND `SubjectId`='$subid'";
+        }
         
         $queryResult = $this->getConnection()->query($sql);
         

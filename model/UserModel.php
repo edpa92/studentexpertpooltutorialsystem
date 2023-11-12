@@ -1,5 +1,6 @@
 <?php
 include_once ('DbConnection.php');
+require_once 'model/SectionModel.php';
 
 
 class UserModel extends DbConnection
@@ -69,7 +70,7 @@ class UserModel extends DbConnection
                     $_SESSION["FullnameSEPTS"] = $rowEmp["Firstname"]." " . $rowEmp["MI"] ." " . $rowEmp["Lastname"];
                     $_SESSION["NameInSideBarSEPTS"] = $rowEmp["Firstname"];
                     $_SESSION["DesignationSEPTS"] = $rowEmp["Designation"];
-                    $_SESSION["EmpIdCSHS"] =  $rowEmp['EmpKey'];
+                    $_SESSION["EmpIdSEPTS"] =  $rowEmp['EmpKey'];
                     $_SESSION["EmpIdCodeSEPTS"] =  $rowEmp['EmpId'];                    
                     $_SESSION["IsVerifiedSEPTS"] =  $rowEmp['Verified'];
                     
@@ -94,6 +95,9 @@ class UserModel extends DbConnection
                     $_SESSION["RoleSEPTS"] = "Student";
                     $_SESSION["PhotoSEPTS"] = ($rowEmp['Image']!=""&&$rowEmp['Image']!=Null?$rowEmp['Image']:"img/undraw_profile.svg");
                     $_SESSION["IsVerifiedSEPTS"] = $rowEmp['EmailVerified'];
+                    
+                    $secO=new SectionModel();
+                    $_SESSION["StudentClassSection"]=(is_null($secO->getTopSY())?0:$secO->getStudSec($rowEmp['StudentId'], $secO->getTopSY()['SYCode'])['SectionId']);
                   
                 }
                 
@@ -241,8 +245,8 @@ class UserModel extends DbConnection
     }
             
     public function isPasswordAndIdSame(){
-        if (isset($_SESSION["EmpIdCSHS"])) {
-            $empId=$_SESSION["EmpIdCSHS"];
+        if (isset($_SESSION["EmpIdSEPTS"])) {
+            $empId=$_SESSION["EmpIdSEPTS"];
             $sql = "SELECT `UserId`, `StudentId`, `EmpId`, `Username`, `Password`, `LastLogin`, `Status` FROM `users_table` WHERE `EmpId`=$empId";
             $query=$this->getConnection()->query($sql);
             $row=$query->fetch_assoc();

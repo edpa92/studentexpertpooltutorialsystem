@@ -59,7 +59,34 @@ class SubjectModel extends DbConnection{
         return null;
     }
     
+    public function getAllActiveSubjectOfStudent($stud_secid)
+    {
+        $sql = "SELECT `sectionsubject_table`.`SectionId`, `subject_table`.*
+FROM `sectionsubject_table` 
+	LEFT JOIN `subject_table` ON `sectionsubject_table`.`SubjectId` = `subject_table`.`SubjectCode` WHERE SectionId='$stud_secid';";
+        
+        $queryResult = $this->getConnection()->query($sql);
+        
+        if (mysqli_num_rows($queryResult) > 0) {
+            return $queryResult;
+        }
+        return null;
+    }
     
+    public function getAllSubjectThatHasTopicOfInstructor($insId)
+    {
+        $sql = "SELECT `subject_table`.*, `topic_table`.`TopicNo`
+FROM `subject_table` 
+	INNER JOIN `topic_table` ON `topic_table`.`SubjectId` = `subject_table`.`SubjectCode`
+    WHERE `topic_table`.`InstructorId`='$insId';";
+        
+        $queryResult = $this->getConnection()->query($sql);
+        
+        if (mysqli_num_rows($queryResult) > 0) {
+            return $queryResult;
+        }
+        return null;
+    }
     
     
     

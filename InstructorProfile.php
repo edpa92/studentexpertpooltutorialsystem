@@ -79,7 +79,7 @@
         }
     }
     
-    $insO=$stud->getInstructor($_SESSION["EmpIdCSHS"]);
+    $insO=$stud->getInstructor($_SESSION["EmpIdSEPTS"]);
     
     ?>
 <div class="container d-flex justify-content-center">

@@ -19,7 +19,7 @@ VALUES ('$TopicId','$Title','$MaterialsDescription','$URL','$CategoryId', '$Stat
 	            
 	        }
 	        
-	        return $this->getConnection()->query($sql);    	
+	        return $this->getConnection()->query($sql)&&$id==0?$this->getConnection()->insert_id:True;    	
     }
     
      public function getAll()
@@ -73,10 +73,12 @@ FROM `learningmaterials_table`
     
     public function get($id)
     {
-        $sql = "SELECT `learningmaterials_table`.*, `topic_table`.`TopicDescription`, `learningmaterials_category_table`.`CategoryName`
+        $sql = "SELECT `learningmaterials_table`.*, `topic_table`.`TopicDescription`, `learningmaterials_category_table`.`CategoryName`, subject_table.Subject
 FROM `learningmaterials_table` 
 	LEFT JOIN `topic_table` ON `learningmaterials_table`.`TopicId` = `topic_table`.`TopicNo` 
-	LEFT JOIN `learningmaterials_category_table` ON `learningmaterials_table`.`CategoryId` = `learningmaterials_category_table`.`LMCatId` WHERE `learningmaterials_table`.`MaterialNo`='$id'";
+	LEFT JOIN `learningmaterials_category_table` ON `learningmaterials_table`.`CategoryId` = `learningmaterials_category_table`.`LMCatId` 
+	LEFT JOIN `subject_table` ON `topic_table`.`SubjectId` = `subject_table`.`SubjectCode` 
+WHERE `learningmaterials_table`.`MaterialNo`='$id'";
         $queryResult = $this->getConnection()->query($sql);
 
         if (mysqli_num_rows($queryResult) > 0) {
@@ -86,7 +88,13 @@ FROM `learningmaterials_table`
         return null;
     }
 	
-    
+    public function addMaterialLoad($InstructorLoadId,$MaterialsId)
+    {  	
+    	$sql = "INSERT INTO `materialsload_table`(`InstructorLoadId`, `MaterialsId`) VALUES ('$InstructorLoadId','$MaterialsId')";
+
+        
+        return $this->getConnection()->query($sql);    	
+    }
     
      public function getAllCatogory()
     {
@@ -100,4 +108,59 @@ FROM `learningmaterials_table`
         
         return null;
     }
+
+     public function getAllMaterialsLoad($matid)
+    {
+        $sql = "SELECT `section_table`.*, `instructorload_table`.`LoadId`, `materialsload_table`.`MaterialsId`
+FROM `section_table` 
+	LEFT JOIN `instructorload_table` ON `instructorload_table`.`SectionId` = `section_table`.`SectionId` 
+	LEFT JOIN `materialsload_table` ON `materialsload_table`.`InstructorLoadId` = `instructorload_table`.`LoadId` 
+WHERE `materialsload_table`.`MaterialsId`='$matid'";
+        
+        $queryResult = $this->getConnection()->query($sql);
+        
+        if (mysqli_num_rows($queryResult) > 0) {
+            return $queryResult;
+        }
+        
+        return null;
+    }
+    
+    public function isMaterialVisibleto($materialid, $loadid)
+    {
+        $sql = "SELECT * FROM `materialsload_table` WHERE `InstructorLoadId`='$loadid' AND `MaterialsId`='$materialid'";
+        $queryResult = $this->getConnection()->query($sql);
+
+        if (mysqli_num_rows($queryResult) > 0) {
+            return True;
+        }
+
+        return null;
+    }
+
+     public function deleteAllMatrialLoad($matid)
+     {  	
+    	$sql = "DELETE FROM `materialsload_table` WHERE `MaterialsId`='$matid'";
+
+        return $this->getConnection()->query($sql);    	
+     }
+
+      public function getAllMaterialsBySubjectforSection($subid, $secid)
+      {
+        $sql = "SELECT `learningmaterials_table`.*, `learningmaterials_category_table`.`CategoryName`, `topic_table`.`TopicDescription`, `materialsload_table`.`InstructorLoadId`, `instructorload_table`.`SectionId`
+FROM `learningmaterials_table` 
+	LEFT JOIN `learningmaterials_category_table` ON `learningmaterials_table`.`CategoryId` = `learningmaterials_category_table`.`LMCatId` 
+	LEFT JOIN `topic_table` ON `learningmaterials_table`.`TopicId` = `topic_table`.`TopicNo` 
+	LEFT JOIN `materialsload_table` ON `materialsload_table`.`MaterialsId` = `learningmaterials_table`.`MaterialNo` 
+	LEFT JOIN `instructorload_table` ON `materialsload_table`.`InstructorLoadId` = `instructorload_table`.`LoadId` 
+WHERE `topic_table`.`SubjectId`='$subid' AND `instructorload_table`.`SectionId`='$secid';";
+        
+        $queryResult = $this->getConnection()->query($sql);
+        
+        if (mysqli_num_rows($queryResult) > 0) {
+            return $queryResult;
+        }
+        
+        return null;
+      }
 }

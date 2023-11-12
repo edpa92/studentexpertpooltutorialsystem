@@ -31,7 +31,7 @@ require_once("views/navi.php");
       </thead>
       <tbody>      
       <?php 
-      $lesO=$les->getAll($_SESSION["EmpIdCSHS"]);
+      $lesO=$les->getAll($_SESSION["EmpIdSEPTS"]);
 	    if (!is_null($lesO)) {
 	        while ($row=$lesO->fetch_assoc()) { ?> 
         <tr>

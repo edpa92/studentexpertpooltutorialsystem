@@ -68,5 +68,32 @@ FROM `employees_table` WHERE `EmpKey`= '$id' ";
 	    return $this->getConnection()->query($sql);    	
     }
 
+     public function getAllInsLoad($insId)
+     {
+        $sql = "SELECT `section_table`.*, `instructorload_table`.`InstructorId`, `instructorload_table`.`LoadId`
+FROM `section_table` LEFT JOIN `instructorload_table` ON `instructorload_table`.`SectionId` = `section_table`.`SectionId`
+    WHERE `instructorload_table`.`InstructorId`='$insId';";
+            
+        $queryResult = $this->getConnection()->query($sql);
+        
+        if (mysqli_num_rows($queryResult) > 0) {
+            return $queryResult;
+        }
+        
+        return null;
+    }
     
+     public function addInsLoad($insid, $secid)
+     {  	
+    	$sql = "INSERT INTO `instructorload_table`( `InstructorId`, `SectionId`) VALUES ('$insid','$secid')";
+        
+        return $this->getConnection()->query($sql);    	
+     }
+     
+     public function removeInsLoad($loadid)
+     {
+         $sql = "DELETE FROM `instructorload_table` WHERE `LoadId`='$loadid'";
+         
+         return $this->getConnection()->query($sql);
+     }
 }

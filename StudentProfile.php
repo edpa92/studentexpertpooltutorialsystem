@@ -94,7 +94,9 @@ if ($stud->isRequestPost()) {
         $classId=$stud->escapeString($_POST['sec']);
         $syid=$sec->getTopSY()['SYCode'];
         
-        $sec->addEditStudSec($idstud, $classId, $syid);
+        if($sec->addEditStudSec($idstud, $classId, $syid)){
+            $_SESSION["StudentClassSection"]=$classId;
+        }
     }
 }
 

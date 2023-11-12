@@ -8,9 +8,9 @@
 <?php if (isset($_SESSION["loggedinSEPTS"])) {?>
         
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-          <li><a href="#" class="nav-link px-2 link-body-emphasis">Dashboard</a></li>
           <?php if($_SESSION["RoleSEPTS"]=="Admin"){
           ?>
+          <li><a href="#" class="nav-link px-2 link-body-emphasis">Dashboard</a></li>
           <li><a href="UserManagment.php" class="nav-link px-2 link-body-emphasis">User Management</a></li>
           <li><a href="#" class="nav-link px-2 link-body-emphasis">Materials</a></li>
           <li><a href="Setup.php" class="nav-link px-2 link-body-emphasis">System setup</a></li>
@@ -18,14 +18,15 @@
           
           <?php if($_SESSION["RoleSEPTS"]=="Instructor"){
           ?>
+          <li><a href="#" class="nav-link px-2 link-body-emphasis">Dashboard</a></li>
+          <li><a href="InstructorLoad.php" class="nav-link px-2 link-body-emphasis">Load</a></li>
+          <li><a href="LearningMaterials.php" class="nav-link px-2 link-body-emphasis">Learning Materials</a></li>
           <li><a href="Lessons.php" class="nav-link px-2 link-body-emphasis">Lessons</a></li>
-          <li><a href="LearningMaterials.php" class="nav-link px-2 link-body-emphasis">Materials</a></li>
-
           <?php }?>
           
           <?php if($_SESSION["RoleSEPTS"]=="Student"){
           ?>
-
+          <li><a href="index.php" class="nav-link px-2 link-body-emphasis">Home</a></li>
           <?php }?>
         </ul>
 

@@ -91,7 +91,7 @@ class SectionModel extends DbConnection{
         return FALSE;
     }
 	
-   public function getTopSY()
+    public function getTopSY()
     {
         $sql = "SELECT `SYCode`, `YearStart`, `YearEnd`, `Status` FROM `schoolyear_table` ORDER BY SYCode DESC LIMIT 1";
         $queryResult = $this->getConnection()->query($sql);
@@ -130,4 +130,19 @@ class SectionModel extends DbConnection{
         
         return 0;
     }
+
+    public function getAllActiveNotLoad($insId)
+    {
+        $sql = "SELECT * FROM `section_table` WHERE Status='1' AND SectionId NOT IN(SELECT SectionId FROM instructorload_table WHERE InstructorId='$insId')";
+        
+        $queryResult = $this->getConnection()->query($sql);
+        
+        if (mysqli_num_rows($queryResult) > 0) {
+            return $queryResult;
+        }
+        
+        return null;
+    }
+
+
 }
