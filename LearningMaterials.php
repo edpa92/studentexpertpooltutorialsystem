@@ -96,7 +96,7 @@ require_once("views/navi.php");
                       <td><?=($row['Status']==0?"Inactive":"Active")?></td>
                       <td>
                       <a class="btn btn-primary " href="LearningMaterialsAdd.php?id=<?=$row['MaterialNo'];?>">Edit</a>
-                      <a target="_blank" class="btn btn-primary " href="LearningMaterialsDetails.php?id=<?=($row['MaterialNo']);?>">View</a>
+                      <a target="_blank" class="btn btn-primary " href="LearningMaterialsDetails.php?id=<?=($row['MaterialNo']);?>">Details</a>
                       </td>
                     </tr>
                    <?php  }
@@ -118,12 +118,12 @@ require_once("views/footer.php");
 <script>
 	$(function(){
 		$("#fancyTableMaterials").fancyTable({
-				sortColumn:3,
-				pagination: true,
-				perPage: 50,
-				globalSearch: true,
-				inputPlaceholder: "Search here"
-			});
+			sortColumn:3,
+			pagination: true,
+			perPage: 50,
+			globalSearch: true,
+			inputPlaceholder: "Search here"
+		});
 	});
 	
 	

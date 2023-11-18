@@ -75,10 +75,11 @@ FROM `sectionsubject_table`
     
     public function getAllSubjectThatHasTopicOfInstructor($insId)
     {
-        $sql = "SELECT `subject_table`.*, `topic_table`.`TopicNo`
+        $sql = "SELECT `subject_table`.*
 FROM `subject_table` 
-	INNER JOIN `topic_table` ON `topic_table`.`SubjectId` = `subject_table`.`SubjectCode`
-    WHERE `topic_table`.`InstructorId`='$insId';";
+	LEFT JOIN `topic_table` ON `topic_table`.`SubjectId` = `subject_table`.`SubjectCode`
+    WHERE `topic_table`.`InstructorId`='$insId'
+    GROUP BY `subject_table`.`SubjectCode`;";
         
         $queryResult = $this->getConnection()->query($sql);
         
