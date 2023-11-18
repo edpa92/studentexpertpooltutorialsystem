@@ -27,19 +27,23 @@ session_start();
     $mat=null;
     $qid=0;
     $qui=null;
-    
+    $quiz_has_been_taken=FALSE;
     
     if ($ins->isRequestPost()) {
         
        try {            
-       
+           
         $qid=$matO->escapeString($_POST['qid']);
         $matid=$matO->escapeString($_POST['matid']);
         $passing=$matO->escapeString($_POST['passing']);
         $total=$matO->escapeString($_POST['totalitem']);
+        $statusq=$matO->escapeString($_POST['statusq']);
         $currentDate = $QO->getCurrentDate();
         
-        $quizid=$QO->addEditQuiz($qid, $matid, $currentDate, $passing, $total, 1);
+        $quizid=$QO->addEditQuiz($qid, $matid, $currentDate, $passing, $total, $statusq);
+        
+        
+        $quiz_has_been_taken=$QO->isQuizTaken($qid);
         
         if (!is_bool($quizid)&&$quizid>0) {
             if (isset($_POST['question']) && count($_POST['question'])>0) {
@@ -53,11 +57,12 @@ session_start();
                         $matO->escapeString($_POST['ansC'][$i]), 
                         $matO->escapeString($_POST['ansD'][$i]), 
                         $matO->escapeString($_POST['ans'][$i]), 
-                        $matO->escapeString($_POST['status'][$i]), 
+                        1, 
                         $matO->escapeString($_POST['points'][$i])); 
                 }
             }
-        }elseif ($quizid){
+        }elseif ($quizid && !$quiz_has_been_taken){
+            
             $QO->deleteAllQuestionsOfQuiz($qid);
             if (isset($_POST['question']) && count($_POST['question'])>0) {
                 for ($i = 0; $i < count($_POST['question']); $i++) {
@@ -70,10 +75,11 @@ session_start();
                         $matO->escapeString($_POST['ansC'][$i]),
                         $matO->escapeString($_POST['ansD'][$i]),
                         $matO->escapeString($_POST['ans'][$i]),
-                        $matO->escapeString($_POST['status'][$i]),
+                        1,
                         $matO->escapeString($_POST['points'][$i]));
                 }
             }
+            
         }
         
         
@@ -105,6 +111,8 @@ session_start();
                     header("location: 404.php");
                     exit();
                 }
+                
+                $quiz_has_been_taken=$QO->isQuizTaken($qid);
             }
             
         }else { 
@@ -155,14 +163,14 @@ require_once("views/navi.php");
           	<small>How many Points:</small>
             <input type="number" name="points[]" class="form-control pointstxt" placeholder="How many Points"  required="required">
           </div>
-          <div class="col">
+<!--           <div class="col">
           	<small>Status:</small>                    
             <select id="status" name="status[]" class="form-select" required="required">
               <option value="" selected>Choose Status...</option>
               <option  value="1">Active</option>
               <option value="0">Inactive</option>
             </select>
-          </div>                              
+          </div>                               -->
         </div>
         <hr>
     </div>
@@ -193,7 +201,16 @@ require_once("views/navi.php");
                           <div class="col">
                           <small>Total Item</small>
                             <input value="<?=(!is_null($qui)?$qui['TotalItem']:"0")?>" name="totalitem" step=".01" id="totalitem" type="number" class="form-control" placeholder="Total Item"  readonly="readonly">
-                          </div>                              
+                          </div>                          
+                          <div class="col">
+                          	<small>Quiz Status:</small>                    
+                            <select id="statusq" name="statusq" class="form-select" required="required">
+                              <option value="" selected>Choose Status...</option>
+                              <option  value="1" <?=($qui['Status']=="1"?"Selected":"");?>>Active</option>
+                              <option value="0" <?=($qui['Status']=="0"?"Selected":"");?>>Inactive</option>
+                            </select>
+                          </div>
+                                                        
                         </div>
                       </div>
                     </div>           			
@@ -202,10 +219,17 @@ require_once("views/navi.php");
            			<div class="card m-2">
                       <div class="card-header">
                         Quiz Questions
+                        <?php if (!$quiz_has_been_taken) {
+                            ?>
                         <a id="addQ" href="#" class="btn btn-primary btn-sm float-end">+ Question</a>
+                        <?php }?>
+                        
                       </div>
                       <div class="card-body " id="cardbodyQ">                      	
                       	<?php 
+                      	if ($quiz_has_been_taken) {
+                      	    echo "<div class='alert alert-danger'>Quiz has already been taken by some of the students, you can no longer allowed to modify its questions. But you can modify the Passing Rate of this quiz or Deactivate(To prevent students take the Quiz) it.</div>";
+                      	}else{
                       	if ($qid>0) {
                       	     $questions=$QO->getAllQuestionsOfQuiz($qid); 
                       	    if (!is_null($questions)) {
@@ -246,14 +270,7 @@ require_once("views/navi.php");
                                           	<small>How many Points:</small>
                                             <input value="<?=($rowQ['Points']);?>" type="number" name="points[]" class="form-control pointstxt" placeholder="How many Points"  required="required">
                                           </div>
-                                          <div class="col">
-                                          	<small>Status:</small>                    
-                                            <select id="status" name="status[]" class="form-select" required="required">
-                                              <option value="" selected>Choose Status...</option>
-                                              <option  value="1" <?=($rowQ['Status']=="1"?"Selected":"");?>>Active</option>
-                                              <option value="0" <?=($rowQ['Status']=="0"?"Selected":"");?>>Inactive</option>
-                                            </select>
-                                          </div>                              
+                                                                  
                                         </div>
                                         <hr>
                                     	</div>
@@ -298,19 +315,19 @@ require_once("views/navi.php");
                               	<small>How many Points:</small>
                                 <input type="number" name="points[]" class="form-control pointstxt" placeholder="How many Points"  required="required">
                               </div>
-                              <div class="col">
+                              <!-- <div class="col">
                               	<small>Status:</small>                    
                                 <select id="status" name="status[]" class="form-select" required="required">
                                   <option value="" selected>Choose Status...</option>
                                   <option  value="1">Active</option>
                                   <option value="0">Inactive</option>
                                 </select>
-                              </div>                              
+                              </div>    -->                           
                             </div>
                             <hr>
                         	</div>
                         </div>
-                        <?php }?>
+                        <?php } }?>
                         
                         
                       </div>

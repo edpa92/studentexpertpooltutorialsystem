@@ -147,12 +147,13 @@ WHERE `materialsload_table`.`MaterialsId`='$matid'";
 
       public function getAllMaterialsBySubjectforSection($subid, $secid)
       {
-        $sql = "SELECT `learningmaterials_table`.*, `learningmaterials_category_table`.`CategoryName`, `topic_table`.`TopicDescription`, `materialsload_table`.`InstructorLoadId`, `instructorload_table`.`SectionId`
+        $sql = "SELECT `learningmaterials_table`.*, `learningmaterials_category_table`.`CategoryName`, `topic_table`.`TopicDescription`, `materialsload_table`.`InstructorLoadId`, `instructorload_table`.`SectionId`, employees_table.Firstname, employees_table.MI, employees_table.Lastname, employees_table.NameExt
 FROM `learningmaterials_table` 
 	LEFT JOIN `learningmaterials_category_table` ON `learningmaterials_table`.`CategoryId` = `learningmaterials_category_table`.`LMCatId` 
 	LEFT JOIN `topic_table` ON `learningmaterials_table`.`TopicId` = `topic_table`.`TopicNo` 
 	LEFT JOIN `materialsload_table` ON `materialsload_table`.`MaterialsId` = `learningmaterials_table`.`MaterialNo` 
-	LEFT JOIN `instructorload_table` ON `materialsload_table`.`InstructorLoadId` = `instructorload_table`.`LoadId` 
+	LEFT JOIN `instructorload_table` ON `materialsload_table`.`InstructorLoadId` = `instructorload_table`.`LoadId`
+    LEFT JOIN employees_table ON instructorload_table.InstructorId=employees_table.EmpKey 
 WHERE `topic_table`.`SubjectId`='$subid' AND `instructorload_table`.`SectionId`='$secid';";
         
         $queryResult = $this->getConnection()->query($sql);

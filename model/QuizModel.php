@@ -14,7 +14,7 @@ VALUES ('$MaterialId','$DatePosted','$PercentagePassing','$TotalItem','$Status')
 	
 	        if ($id>0) {
 	            $sql = "UPDATE `quiz_table` SET `PercentagePassing`='$PercentagePassing',
-`TotalItem`='$TotalItem',`Status`='$Status' WHERE `QuizNo`='$id'";
+`TotalItem`='$TotalItem',`Status`='$Status', `DateLastModefied`='$this->currentDate' WHERE `QuizNo`='$id'";
 	            
 	        }
 	        
@@ -30,9 +30,13 @@ VALUES ('$QuizId','$Question','$ChoiceA','$ChoiceB','$ChoiceC','$ChoiceD','$Answ
 	        return $this->getConnection()->query($sql);    	
     }
     
-     public function getAllQuiz($matId)
+    
+    
+     public function getAllQuiz($matId, $studid)
     {
-        $sql = "SELECT `QuizNo`, `MaterialId`, `DatePosted`, `PercentagePassing`, `TotalItem`, quiz_table.`Status`, COUNT(question_table.QQId) AS QCount FROM `quiz_table` 
+        $sql = "SELECT `QuizNo`, `MaterialId`, `DatePosted`, `DateLastModefied`, `PercentagePassing`, `TotalItem`, quiz_table.`Status`, COUNT(question_table.QQId) AS QCount,
+(SELECT COUNT(*) AS Taken FROM take_table WHERE take_table.QuizId=quiz_table.QuizNo AND take_table.StudentId='$studid') TakenByStudent
+FROM `quiz_table` 
 LEFT JOIN question_table ON quiz_table.QuizNo=question_table.QuizId WHERE `MaterialId`='$matId'";
         
         $queryResult = $this->getConnection()->query($sql);
@@ -46,13 +50,32 @@ LEFT JOIN question_table ON quiz_table.QuizNo=question_table.QuizId WHERE `Mater
     
     public function getQuiz($id)
     {
-        $sql = "SELECT `QuizNo`, `MaterialId`, `DatePosted`, `PercentagePassing`, `TotalItem`, `Status` FROM `quiz_table` WHERE `QuizNo`='$id'";
+        $sql = "SELECT `QuizNo`, `MaterialId`, `DatePosted`, `DateLastModefied`, `PercentagePassing`, `TotalItem`, quiz_table.`Status`, COUNT(question_table.QQId) AS QCount FROM `quiz_table` 
+LEFT JOIN question_table ON quiz_table.QuizNo=question_table.QuizId WHERE `QuizNo`='$id'";
         $queryResult = $this->getConnection()->query($sql);
 
         if (mysqli_num_rows($queryResult) > 0) {
             return $queryResult->fetch_assoc();
         }
 
+        return null;
+    }
+    
+    public function getQuizToTake($qid)
+    {
+        $sql = "SELECT `quiz_table`.`QuizNo`, `DateLastModefied`, `quiz_table`.`MaterialId`, `quiz_table`.`DatePosted`, `quiz_table`.`PercentagePassing`, `quiz_table`.`TotalItem`, `quiz_table`.`Status`, COUNT(question_table.QQId) AS QCount, `learningmaterials_table`.`MaterialNo`, `topic_table`.`TopicDescription`, `subject_table`.`Subject`
+FROM `quiz_table` 
+    LEFT JOIN question_table ON quiz_table.QuizNo=question_table.QuizId
+	LEFT JOIN `learningmaterials_table` ON `quiz_table`.`MaterialId` = `learningmaterials_table`.`MaterialNo` 
+	LEFT JOIN `topic_table` ON `learningmaterials_table`.`TopicId` = `topic_table`.`TopicNo` 
+	LEFT JOIN `subject_table` ON `topic_table`.`SubjectId` = `subject_table`.`SubjectCode` WHERE quiz_table.QuizNo='$qid'";
+        
+        $queryResult = $this->getConnection()->query($sql);
+        
+        if (mysqli_num_rows($queryResult) > 0) {
+            return $queryResult->fetch_assoc();
+        }
+        
         return null;
     }
     
@@ -73,8 +96,20 @@ LEFT JOIN question_table ON quiz_table.QuizNo=question_table.QuizId WHERE `Mater
     {
         $sql = "DELETE FROM `question_table` WHERE `QuizId`='$quizid'";
         
-        return $queryResult = $this->getConnection()->query($sql);;
+        return $queryResult = $this->getConnection()->query($sql);
     }
     
+    
+    public function isQuizTaken($qid)
+    {
+        $sql = "SELECT * FROM `take_table` WHERE `QuizId`='$qid' ";
+        $queryResult = $this->getConnection()->query($sql);
+
+        if (mysqli_num_rows($queryResult) > 0) {
+            return TRUE;
+        }
+
+        return FALSE;
+    }
 	
 }

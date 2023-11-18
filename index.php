@@ -34,48 +34,51 @@ require_once("views/navi.php");
     	  		<?php 
     	  		    $mat=$matO->getAllMaterialsBySubjectforSection($row['SubjectCode'], $_SESSION["StudentClassSection"]);
     	  		    if (!is_null($mat)) {
-    	  		        while ($rowM=$mat->fetch_assoc()) { ?>    	  		               	  		             
+    	  		        while ($rowM=$mat->fetch_assoc()) { if($rowM['Status']==1) {?>    	  		               	  		             
                     <div class="card" style="width: 18rem;">
                       <div class="card-body">
                         <h5 class="card-title"><?=($rowM['Title']);?></h5>
                         <h6 class="card-subtitle mb-2 text-muted"><?=($rowM['TopicDescription']);?></h6>
+                        
 							<?php 
 							if ($rowM['CategoryName']=="Videos") {?>
-    							<h1 class=" border text-center py-4">
+    							<h1 class=" border text-center py-5">
     								<i class="bi bi-play-circle-fill"></i>
     								<small>Video</small>
     							</h1>
 							<?php }else if ($rowM['CategoryName']=="Docs/Sheets/Slides/PDF") {
 							?>
-								<h1 class=" border text-center py-4">
+								<h1 class=" border text-center py-5">
     								<i class="bi bi-file-text-fill"></i>
     								<small>Files</small>
     							</h1>
 							<?php }else if ($rowM['CategoryName']=="Sites") {
 							?>
-								<h1 class=" border text-center py-4">
+								<h1 class=" border text-center py-5">
     								<i class="bi bi-globe2"></i>
     								<small>Website</small>
     							</h1>
 							<?php }else if ($rowM['CategoryName']=="Images") {
 							?>
-								<h1 class=" border text-center py-4">
+								<h1 class=" border text-center py-5">
     								<i class="bi bi-images"></i>
     								<small>Images</small>
     							</h1>
 							<?php }else if ($rowM['CategoryName']=="Drive Folder") {
 							?>
-								<h1 class=" border text-center py-4">
+								<h1 class=" border text-center py-5">
     								<i class="bi bi-folder2"></i>
     								<small>G-Drive Folder</small>
     							</h1>
 							<?php } ?>
 							
 
-						<a target="_blank" class='btn btn-outline-primary btn-sm ' href="LearningMaterialsDetails.php?id=<?=($rowM['MaterialNo']);?>" class="card-link float-end">View</a>
+						<a target="_blank" class='btn btn-outline-primary btn-sm p-auto' href="LearningMaterialsDetails.php?id=<?=($rowM['MaterialNo']);?>" class="card-link float-end">View</a>
+						<small style="font-size: 10px;" class="text-secondary float-end">Posted by:<?=($rowM['Firstname']." ".$rowM['MI']." ".$rowM['Lastname']." ".$rowM['NameExt'])?></small>
+						
                       </div>
                     </div>
-              <?php   }
+              <?php  } }
     	  		    }else {    	  		        
     	  		        echo "<h4>No learning Materials Uploaded for this Subject.</h4>";
     	  		    }

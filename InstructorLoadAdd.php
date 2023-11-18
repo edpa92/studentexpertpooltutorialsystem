@@ -43,13 +43,13 @@ require_once("views/navi.php");
    	<?php 
    	    $sec=$secO->getAllActiveNotLoad($_SESSION["EmpIdSEPTS"]);
    	    if (!is_null($sec)) {
-   	        while ($row=$sec->fetch_assoc()) {
+   	        while ($row=$sec->fetch_assoc()) if($row['Status']==1){ {
    	            ?>
    	        <h5 class="form-check form-switch">
               <input class="form-check-input" value="<?=$row['SectionId'];?>" type="checkbox" role="switch" id="flexSwitchSec" name="flexSwitchSec[]" >
               <label class="form-check-label" for="flexSwitchSec"><?=$row['Section'];?></label>
             </h5>
-   	    <?php }
+   	    <?php } }
    	    }
    	?>
    	<input type="submit" class="mt-3 btn btn-primary " value="Add as Load">

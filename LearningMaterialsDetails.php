@@ -14,6 +14,10 @@ session_start();
     require_once 'model/QuizModel.php';
     $qO=new QuizModel();
     
+    
+    require_once 'model/TakeQuizModel.php';
+    $takeO=new TakeQuizModel();
+    
     $id=0;
     $mat=null;
     
@@ -94,7 +98,12 @@ require_once("views/navi.php");
 		</div>
 		<div class="row">
 			<div class="col-md-12">
+			<?php 
 			
+			$student_id=$_SESSION["RoleSEPTS"] == "Student"?$_SESSION["StudentId"]:0;
+			$quizes=$qO->getAllQuiz($id, $student_id);
+			
+			?>
 			<h3>Quizes</h3>
 			<div class="table-responsive">
 				<table class="table table-responsive">
@@ -111,9 +120,8 @@ require_once("views/navi.php");
                   </thead>
                   <tbody>
                   <?php 
-                  $quizes=$qO->getAllQuiz($id);
                   if (!is_null($quizes)) {
-                      while ($row=$quizes->fetch_assoc()) { ?>                         
+                      while ($row=$quizes->fetch_assoc()) {  ?>                         
                         <tr>
                           <td><?=$row['QuizNo']?></td>
                           <td><?=$row['DatePosted']?></td>
@@ -122,15 +130,72 @@ require_once("views/navi.php");
                           <td><?=$row['QCount']?> Question(s)</td>
                           <td><?=($row['Status']==0?"Inactive":"Active")?></td>
                           <td>
-                          <a class="btn btn-primary <?=($_SESSION["RoleSEPTS"] == "Student"?"d-inline":"d-none");?>">Take the Quiz</a>
-                          <a href="TestQuizAdd.php?m=<?=$id?>&q=<?=$row['QuizNo']?>" class="btn btn-primary btn-sm <?=($_SESSION["RoleSEPTS"] == "Instructor"?"d-inline":"d-none");?>">Edit</a></td>
+                          <?php if($_SESSION["RoleSEPTS"] == "Student"&&$row['QCount']>0 && $row['Status']==1){?>
+                          <a href="TakeQuiz.php?qid=<?=$row['QuizNo']?>" class="btn btn-primary ">Take Quiz</a>
+                         <?php }?>
+                         <?php if($_SESSION["RoleSEPTS"] == "Student" && $row['TakenByStudent']>0){?>
+                          <a data-bs-toggle="modal" data-bs-target="#quizModal<?=$row['QuizNo']?>" href="#" class="btn btn-primary ">Details</a>
+                         <?php }?>
+                         
+                          <a href="TestQuizAdd.php?m=<?=$id?>&q=<?=$row['QuizNo']?>" class="btn btn-primary btn-sm <?=($_SESSION["RoleSEPTS"] == "Instructor"?"d-inline":"d-none");?>">Edit</a>
+                              <?php 
+                            if ($_SESSION["RoleSEPTS"] == "Student"&&$row['TakenByStudent']>0) {
+                        
+                                  ?>                      
+                            <!-- Modal -->
+                            <div class="modal fade" id="quizModal<?=$row['QuizNo']?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                              <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Quiz Details</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                    	<div class="table-responsive ">
+                                            <table class="table border table-sm table-hover">
+                                              <thead>
+                                                <tr>
+                                                  <th scope="col">DateTaken</th>
+                                                  <th scope="col">TotalScore</th>
+                                                  <th scope="col">PassingScore</th>
+                                                  <th scope="col">Remarks</th>
+                                                </tr>
+                                              </thead>
+                                              <tbody>
+                                              <?php 
+                                    $taken=$takeO->getAllTQStudent($_SESSION["StudentId"]);
+                                    if (!is_null($taken)) {
+                                        while ($rowT=$taken->fetch_assoc()) { ?>
+                                                <tr>
+                                                  <td><?=($rowT['DateTaken'])?></td>
+                                                  <td><?=($rowT['TotalScore'])?></td>
+                                                  <td><?=($rowT['PassingScore'])?></td>
+                                                  <td><?=($rowT['Remarks'])?></td>
+                                                </tr> 
+                                                <?php  }
+                                                }
+                                            ?>  
+                                              </tbody>
+    										</table>
+    									</div>	
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>                      
+                            <!-- Modal END-->
+                            <?php }?>
+                          
+                          </td>
                         </tr>
-                    <?php   }
-                  }
-                  
-                  ?>
+                        
+                    <?php  }  }?>
                   </tbody>
                 </table>
+                
+               
                 </div>
                 
 			</div>
