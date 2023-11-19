@@ -24,6 +24,8 @@ session_start();
     if ($les->isRequestPost()) {
         
         $id=$les->escapeString($_POST["id"]);
+        $isuploaded=false;
+        
        
         $matId=$mat->addEdit($id, 
             $les->escapeString($_POST['lesson']), 
@@ -33,10 +35,27 @@ session_start();
             $les->escapeString($_POST['category']), 
             $les->escapeString($_POST['status'])); 
                 
+        if (!is_null($_FILES['file']["name"]) && $_FILES['file']["name"]!=="") {
+            $temp = explode(".", $_FILES['file']["name"]);
+            $fileExt = end($temp);
+            $target_file_path="materials/".($id>0?$id:$matId).".".$fileExt;
+            
+            $isuploaded=move_uploaded_file($_FILES['file']["tmp_name"], $target_file_path);
+            if ($isuploaded) {
+                $mat->EditMaterialFileUpladed(($id>0?$id:$matId), $target_file_path);
+            }
+            
+            if ($id>0&&isset($_POST['materialfile'])&&$_POST['materialfile']!="") {
+                unlink($les->escapeString($_POST['materialfile']));
+            }
+        }
+        
+        
         if ($id==0 && count($_POST['flexSwitchLoad'])>0) {
             for ($i = 0; $i < count($_POST['flexSwitchLoad']); $i++) {
                 $mat->addMaterialLoad($mat->escapeString($_POST['flexSwitchLoad'][$i]), $matId);
-            }
+            }            
+            
         }elseif ($id>0 && count($_POST['flexSwitchLoad'])>0){
             
             $mat->deleteAllMatrialLoad($id);
@@ -66,9 +85,9 @@ require_once("views/navi.php");
 ?>
 <div class="container">
 <div class="row">
- <form method="post" class="row g-3">
+ <form method="post" class="row g-3" enctype="multipart/form-data">
 	<div class="col-sm-12 col-md-8 col-lg-6">
-    	<h2>Add Learning Material</h2>
+    	<h2><?=($id>0?"Edit":"Add") ?> Learning Material</h2>
         	<?php 
         	    $load=$ins->getAllInsLoad($_SESSION["EmpIdSEPTS"]);
         	    if (is_null($load)) {?>		
@@ -87,7 +106,7 @@ require_once("views/navi.php");
                   if (!is_null($dataLess)) {
                       while ($row=$dataLess->fetch_assoc()) {
                       ?>
-                      	<option <?=($id>0&&$matdata['TopicId']==$row["TopicNo"]?"selected":"");?> value="<?=$row["TopicNo"]; ?>" ><?="(".$row["Subject"].")".$row["TopicDescription"]; ?> </option>
+                      	<option  <?=($id>0&&$matdata['TopicId']==$row["TopicNo"]?"selected":"");?> value="<?=$row["TopicNo"]; ?>" ><?="(".$row["Subject"].")".$row["TopicDescription"]; ?> </option>
                       <?php 
                           }
                       }
@@ -128,10 +147,15 @@ require_once("views/navi.php");
                 
               </div>
               <div class="col-12">
-                <label for="url" class="form-label">URL*:</label>
-                <input value="<?=($id>0?$matdata['URL']:""); ?>" type="text" class="form-control" id="url" name="url" placeholder="www.youtube.com" required="required">
+                <label for="url" class="form-label">URL(Optional):</label>
+                <input value="<?=($id>0?$matdata['URL']:""); ?>" type="text" class="form-control" id="url" name="url" placeholder="www.youtube.com" >
               </div>
-                
+              <div class="col-12">
+                <label for="file" class="form-label">File(Optional):</label>
+                <input  id="file-input" type="file" class="form-control" id="file"  name="file" >
+                <input  id="materialfile" type="hidden" class="form-control" name="materialfile" value="<?=$matdata['Path']?>">
+                <small class="text-warning <?=($id>0&&$matdata['Path']!=""&&!is_null($matdata['URL'])?"":"d-none")?>">If you upload a new file, It will overwrite the current file of this Learning materials. Leave it blank if you don't want to change the file.</small>	
+              </div>
     		</div>                
     	</div>    	
     	<div class="col-sm-12 col-md-4 col-lg-6 ps-xl-5 ps-lg-5 ps-sm-2">
@@ -174,5 +198,33 @@ $(document).ready(function () {
             return false;
         }
     });
+    
+    
+    
+    
+    // When the file input changes
+  $('#file-input').change(function(){
+    
+    // Get the selected file
+    var file = this.files[0];
+    var allowedTypes = /^image\/(jpeg|png|gif)|video\/(mp4|mov)|application\/(pdf|msword|vnd.ms-powerpoint|vnd.openxmlformats-officedocument.presentationml.presentation|vnd.ms-excel|vnd.openxmlformats-officedocument.spreadsheetml.sheet|vnd.openxmlformats-officedocument.wordprocessingml.document)$/;
+    
+    
+    if (!allowedTypes.test(file.type)) {
+      alert('File type not allowed.');
+      this.value="";
+      return;
+    }
+    
+    if (file.size > 1024 * 1024*100) {
+      alert('File size should not exceed 100MB.');
+      this.value="";
+      return;
+    }
+
+    
+  });
+    
+  
 });
 </script>

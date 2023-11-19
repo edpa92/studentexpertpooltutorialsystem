@@ -34,8 +34,9 @@ require_once("views/navi.php");
     	  		<?php 
     	  		    $mat=$matO->getAllMaterialsBySubjectforSection($row['SubjectCode'], $_SESSION["StudentClassSection"]);
     	  		    if (!is_null($mat)) {
-    	  		        while ($rowM=$mat->fetch_assoc()) { if($rowM['Status']==1) {?>    	  		               	  		             
-                    <div class="card" style="width: 18rem;">
+    	  		        while ($rowM=$mat->fetch_assoc()) { if($rowM['Status']==1) {
+    	  		            ?>    	  		               	  		             
+                    <div class="card mx-2" style="width: 18rem;">
                       <div class="card-body">
                         <h5 class="card-title"><?=($rowM['Title']);?></h5>
                         <h6 class="card-subtitle mb-2 text-muted"><?=($rowM['TopicDescription']);?></h6>
@@ -62,13 +63,13 @@ require_once("views/navi.php");
 							?>
 								<h1 class=" border text-center py-5">
     								<i class="bi bi-images"></i>
-    								<small>Images</small>
+    								<small>Image</small>
     							</h1>
-							<?php }else if ($rowM['CategoryName']=="Drive Folder") {
+							<?php }else if ($rowM['CategoryName']=="Google Drive Folder/File") {
 							?>
 								<h1 class=" border text-center py-5">
     								<i class="bi bi-folder2"></i>
-    								<small>G-Drive Folder</small>
+    								<small>G-Drive Folder/Files</small>
     							</h1>
 							<?php } ?>
 							

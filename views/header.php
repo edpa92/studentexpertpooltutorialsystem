@@ -8,6 +8,7 @@
   
     <link href="./css/style.css" rel="stylesheet" >
   	<link rel="stylesheet" href="./css/font/bootstrap-icons.css">
+  	 
   </head>
   <body>
   

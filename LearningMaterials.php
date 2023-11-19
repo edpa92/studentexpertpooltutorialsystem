@@ -46,12 +46,12 @@ require_once("views/navi.php");
     <?php if (isset($_GET['sub'])) { ?>
        
     	<div class="row">
-    		<div class="col-sm-12 col-md-6 col-lg-2 mt-3">
-    			<ul class="nav flex-column">
+    		<!--<div class="col-sm-12 col-md-6 col-lg-2 mt-3">
+    			 <ul class="nav flex-column">
     			<li class="nav-item">
-                        <a class="nav-link disabled" aria-current="page"  >LESSONS</a>
-                 </li>
-    			<?php 
+                        <a class="nav-link disabled" aria-current="page"  >LESSONS</a> 
+                 </li>-->
+    			<?php /*
     			$lesO=$les->getAllActive($_SESSION["EmpIdSEPTS"],$_GET['sub']);
     			    if (!is_null($lesO)) {
     			        while ($row=$lesO->fetch_assoc()) { ?>     			
@@ -59,15 +59,15 @@ require_once("views/navi.php");
                         <a class="nav-link <?=(isset($_GET['id'])&&$_GET['id']==$row['TopicNo']?"disabled":"")?>" aria-current="page" href="LearningMaterials.php?sub=<?=$_GET['sub']?>&id=<?=$row['TopicNo']?>" ><?=$row['TopicDescription']?></a>
                       </li>
     			      <?php  }
-    			    }
+    			    } */
     			    ?>
-                </ul>
+               <!--  </ul>
                 
-                <a class="btn btn-primary mt-4" href="LessonsAdd.php" role="button">Add Lesson/Topic</a>
+                <a class="btn btn-primary mt-4" href="LessonsAdd.php" role="button">Add Lesson/Topic</a> 
     		</div>
-    		<div class="col-sm-12 col-md-6 col-lg-10">
+    		<div class="col-sm-12 col-md-6 col-lg-10">-->
     		<?php 
-    		if (isset($_GET['id'])) {
+    		//if (isset($_GET['id'])) {
     		        ?>
     			<table id='fancyTableMaterials' class="table table-hover table-responsive-md mt-3">
                   <thead>
@@ -82,10 +82,10 @@ require_once("views/navi.php");
                   </thead>
                   <tbody>
                   <?php 
-                  $matData=$mat->getAll();
-                  if (isset($_GET['id'])&&$_GET['id']!="") {
+                  $matData=$mat->getAll($mat->escapeString($_GET['sub']));
+                  /* if (isset($_GET['id'])&&$_GET['id']!="") {
                       $matData=$mat->getAllByTopic($mat->escapeString($_GET['id']));
-                  }
+                  } */
                   if (!is_null($matData)) {
                       while ($row=$matData->fetch_assoc()) {?>   
                     <tr>
@@ -104,9 +104,9 @@ require_once("views/navi.php");
                   ?>
                   </tbody>
                 </table>
-                <?php }
+                <?php // }
                 
-                ?>
+                ?> 
     		</div>
     	</div>
     	<?php }?>

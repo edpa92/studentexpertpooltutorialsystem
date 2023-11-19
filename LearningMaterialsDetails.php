@@ -45,55 +45,58 @@ require_once("views/navi.php");
 		<div class="row pt-3">
 			<div class="col-sm-12 col-md-8 col-lg-6">			
 				<?php 
-					if ($mat['CategoryName']=="Videos") {?>								
-        				<div class="ratio ratio-16x9">
-        					<iframe width="560" height="315" src="<?=($mat['URL']);?>" ></iframe>
+				if ($mat['Path']!=""&&!is_null($mat['Path'])) {
+				    
+				    $finfo = finfo_open(FILEINFO_MIME_TYPE);
+				    $file_format = finfo_file($finfo, $mat['Path']);
+				    finfo_close($finfo);
+				    
+				    //echo "The file format is: " . $file_format;
+				    //video/mp4
+				    //officedocument
+				    //pdf
+				    //image
+				    
+				    
+				    if(strpos($file_format, "pdf")!==FALSE){?>				        
+				      <div class="ratio ratio-16x9">
+				        <iframe width="560" height="315" src="<?=($mat['Path']);?>" ></iframe>
+				       </div>		
+			 <?php }else if(strpos($file_format, "officedocument")!==FALSE){ ?>
+				        <div class="text-center pt-4">
+        					<a target="_blank" class="icon-link" href="<?=($mat['Path']);?>">    							
+        						<h4><i class="bi bi-file-text-fill"></i> Download File</h4>
+        					</a>
         				</div>
-					<?php }else if ($mat['CategoryName']=="Docs/Sheets/Slides/PDF") {
-					?>
-						<h1 class="ratio ratio-16x9 border text-center py-4">
-							<a target="_blank" class="icon-link" href="<?=($mat['URL']);?>">
-    							<i class="bi bi-file-text-fill"></i>
-    							<small>Files</small>
-							</a>
-						</h1>
-					<?php }else if ($mat['CategoryName']=="Sites") {
-					?>
-						<h1 class="ratio ratio-16x9 border text-center py-4">
-							<a target="_blank" class="icon-link" href="<?=($mat['URL']);?>">
-    							<i class="bi bi-globe2"></i>
-    							<small>Website</small>
-							</a>
-						</h1>
-					<?php }else if ($mat['CategoryName']=="Images") {
-					?>
-						<h1 class="ratio ratio-16x9 border text-center py-4">
-							<a target="_blank" class="icon-link" href="<?=($mat['URL']);?>">
-    							<i class="bi bi-images"></i>
-    							<small>Images</small>
-    						</a>
-						</h1>
-					<?php }else if ($mat['CategoryName']=="Drive Folder") {
-					?>
-						<h1 class="border text-center py-4 ">
-							<a target="_blank" class="icon-link text-center" href="<?=($mat['URL']);?>">
-    							<i class="bi bi-folder2"></i>
-    							<small>G-Drive Folder</small>
-    						</a>
-						</h1>
-					<?php } ?>
-							
+				 <?php  }else if(strpos($file_format, "video")!==FALSE){?>				        
+				        <div class="ratio ratio-16x9">
+				        <iframe width="560" height="315" src="<?=($mat['Path']);?>" ></iframe>
+				        </div>		
+				    <?php }else if(strpos($file_format, "image")!==FALSE){ ?>
+				        <img src="<?=($mat['Path']);?>" class="img-fluid" alt="...">
+				  <?php }
+				    
+				    
+				}else {?>
+				    <div class="text-center pt-4">
+    				    <a title="<?=($mat['URL']);?>" target="_blank" class="icon-link" href="<?=($mat['URL']);?>">
+    			        <h4><i class="bi bi-file-text-fill"></i><?=$mat['CategoryName'] ?>  Link </h4>
+    			        </a>
+			        </div>	
+				<?php }?>	
 					
 			</div>
 			<div class="col-sm-12 col-md-4 col-lg-6 ps-sm-4">
 				<h4>			
-					<a href="TestQuizAdd.php?m=<?=$id?>" class="btn btn-primary mt-1 me-2 float-end <?=($_SESSION["RoleSEPTS"] == "Instructor"?"d-inline":"d-none");?>">Add Quiz</a>
+					<a href="TestQuizAdd.php?m=<?=$id?>" class="btn btn-primary mt-1 me-2 float-end <?=($_SESSION["RoleSEPTS"] == "Instructor"?"d-inline":"d-none");?>">Add Quiz</a>		
+					<a href="LearningMaterialsAdd.php?id=<?=$id?>" class="btn btn-primary mt-1 me-2 float-end <?=($_SESSION["RoleSEPTS"] == "Instructor"?"d-inline":"d-none");?>">Edit</a>
 					
 					<?=($mat['Title']);?>		
 				</h4>
 				<h6><?=($mat['Subject']." - ".$mat['TopicDescription']);?></h6>
 				<em class=""><?=($mat['MaterialsDescription']);?></em>
 				<a href="#">Lear more</a><br>
+				<em class="float-end">Posted by:<?=($mat['FullNameIns']);?></em>
 			</div>
 		</div>
 		<div class="row">
@@ -121,7 +124,7 @@ require_once("views/navi.php");
                   <tbody>
                   <?php 
                   if (!is_null($quizes)) {
-                      while ($row=$quizes->fetch_assoc()) {  ?>                         
+                      while ($row=$quizes->fetch_assoc()) { if(!is_null($row['QuizNo'])){ ?>                         
                         <tr>
                           <td><?=$row['QuizNo']?></td>
                           <td><?=$row['DatePosted']?></td>
@@ -191,7 +194,7 @@ require_once("views/navi.php");
                           </td>
                         </tr>
                         
-                    <?php  }  }?>
+                    <?php } }  }?>
                   </tbody>
                 </table>
                 

@@ -22,12 +22,25 @@ VALUES ('$TopicId','$Title','$MaterialsDescription','$URL','$CategoryId', '$Stat
 	        return $this->getConnection()->query($sql)&&$id==0?$this->getConnection()->insert_id:True;    	
     }
     
-     public function getAll()
+    public function EditMaterialFileUpladed($id,$path)
+    {
+        
+        if ($id>0) {
+            $sql = "UPDATE `learningmaterials_table` SET `Path`='$path' WHERE `MaterialNo`='$id'";
+            
+        }
+        
+        return $this->getConnection()->query($sql);
+    }
+    
+    public function getAll($subid)
     {
         $sql = "SELECT `learningmaterials_table`.*, `topic_table`.`TopicDescription`, `learningmaterials_category_table`.`CategoryName`
 FROM `learningmaterials_table` 
 	LEFT JOIN `topic_table` ON `learningmaterials_table`.`TopicId` = `topic_table`.`TopicNo` 
-	LEFT JOIN `learningmaterials_category_table` ON `learningmaterials_table`.`CategoryId` = `learningmaterials_category_table`.`LMCatId`";
+	LEFT JOIN `learningmaterials_category_table` ON `learningmaterials_table`.`CategoryId` = `learningmaterials_category_table`.`LMCatId`
+WHERE `topic_table`.SubjectId='$subid'
+";
         
         $queryResult = $this->getConnection()->query($sql);
         
@@ -73,11 +86,12 @@ FROM `learningmaterials_table`
     
     public function get($id)
     {
-        $sql = "SELECT `learningmaterials_table`.*, `topic_table`.`TopicDescription`, `learningmaterials_category_table`.`CategoryName`, subject_table.Subject
+        $sql = "SELECT `learningmaterials_table`.*, `topic_table`.`TopicDescription`, `learningmaterials_category_table`.`CategoryName`, subject_table.Subject, CONCAT(employees_table.Firstname,' ',employees_table.MI,' ',employees_table.Lastname,' ',employees_table.NameExt) AS FullNameIns
 FROM `learningmaterials_table` 
 	LEFT JOIN `topic_table` ON `learningmaterials_table`.`TopicId` = `topic_table`.`TopicNo` 
 	LEFT JOIN `learningmaterials_category_table` ON `learningmaterials_table`.`CategoryId` = `learningmaterials_category_table`.`LMCatId` 
 	LEFT JOIN `subject_table` ON `topic_table`.`SubjectId` = `subject_table`.`SubjectCode` 
+	LEFT JOIN employees_table ON `topic_table`.InstructorId=employees_table.EmpKey 
 WHERE `learningmaterials_table`.`MaterialNo`='$id'";
         $queryResult = $this->getConnection()->query($sql);
 
