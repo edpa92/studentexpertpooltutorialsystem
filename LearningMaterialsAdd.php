@@ -153,7 +153,7 @@ require_once("views/navi.php");
               <div class="col-12">
                 <label for="file" class="form-label">File(Optional):</label>
                 <input  id="file-input" type="file" class="form-control" id="file"  name="file" >
-                <input  id="materialfile" type="hidden" class="form-control" name="materialfile" value="<?=$matdata['Path']?>">
+                <input  id="materialfile" type="hidden" class="form-control" name="materialfile" value="<?=($id>0&&!is_null($matdata['Path'])?$matdata['Path']:"")?>">
                 <small class="text-warning <?=($id>0&&$matdata['Path']!=""&&!is_null($matdata['URL'])?"":"d-none")?>">If you upload a new file, It will overwrite the current file of this Learning materials. Leave it blank if you don't want to change the file.</small>	
               </div>
     		</div>                

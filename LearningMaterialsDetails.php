@@ -88,7 +88,7 @@ require_once("views/navi.php");
 			</div>
 			<div class="col-sm-12 col-md-4 col-lg-6 ps-sm-4">
 				<h4>			
-					<a href="TestQuizAdd.php?m=<?=$id?>" class="btn btn-primary mt-1 me-2 float-end <?=($_SESSION["RoleSEPTS"] == "Instructor"?"d-inline":"d-none");?>">Add Quiz</a>		
+					<a href="QuizAdd.php?m=<?=$id?>" class="btn btn-primary mt-1 me-2 float-end <?=($_SESSION["RoleSEPTS"] == "Instructor"?"d-inline":"d-none");?>">Add Quiz</a>		
 					<a href="LearningMaterialsAdd.php?id=<?=$id?>" class="btn btn-primary mt-1 me-2 float-end <?=($_SESSION["RoleSEPTS"] == "Instructor"?"d-inline":"d-none");?>">Edit</a>
 					
 					<?=($mat['Title']);?>		
@@ -140,7 +140,7 @@ require_once("views/navi.php");
                           <a data-bs-toggle="modal" data-bs-target="#quizModal<?=$row['QuizNo']?>" href="#" class="btn btn-primary ">Details</a>
                          <?php }?>
                          
-                          <a href="TestQuizAdd.php?m=<?=$id?>&q=<?=$row['QuizNo']?>" class="btn btn-primary btn-sm <?=($_SESSION["RoleSEPTS"] == "Instructor"?"d-inline":"d-none");?>">Edit</a>
+                          <a href="QuizAdd.php?m=<?=$id?>&q=<?=$row['QuizNo']?>" class="btn btn-primary btn-sm <?=($_SESSION["RoleSEPTS"] == "Instructor"?"d-inline":"d-none");?>">Edit</a>
                               <?php 
                             if ($_SESSION["RoleSEPTS"] == "Student"&&$row['TakenByStudent']>0) {
                         
@@ -197,11 +197,9 @@ require_once("views/navi.php");
                     <?php } }  }?>
                   </tbody>
                 </table>
-                
-               
                 </div>
-                
 			</div>
+			
 		</div>
     </div>
     

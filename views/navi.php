@@ -20,7 +20,8 @@
           ?>
           <li><a href="#" class="nav-link px-2 link-body-emphasis">Dashboard</a></li>
           <li><a href="InstructorLoad.php" class="nav-link px-2 link-body-emphasis">Load</a></li>
-          <li><a href="LearningMaterials.php" class="nav-link px-2 link-body-emphasis">Learning Materials</a></li>
+          <li><a href="LearningMaterials.php" class="nav-link px-2 link-body-emphasis">Materials</a></li>
+          <li><a href="Quizes.php" class="nav-link px-2 link-body-emphasis">Quizes</a></li>
           <li><a href="Lessons.php" class="nav-link px-2 link-body-emphasis">Lessons</a></li>
           <?php }?>
           

@@ -10,8 +10,6 @@ if (!isset($_SESSION["RoleSEPTS"]) || $_SESSION["RoleSEPTS"] != "Instructor") {
 }
 
 
-require_once("model/LessonModel.php");
-$les=new LessonModel();
 
 
 require_once("model/MaterialsModel.php");

@@ -47,8 +47,16 @@ class TakeQuizModel extends DbConnection{
     
     public function getAllTQStudent($studid)
     {
-        $sql = "SELECT `TakeNo`, `StudentId`, `QuizId`, `DateTaken`, `TotalScore`, `PassingScore`, `Remarks`, `Status` FROM `take_table` WHERE `StudentId`='$studid'";
+        $sql = "SELECT `take_table`.*, `student_table`.*
+FROM `take_table` 
+	LEFT JOIN `student_table` ON `take_table`.`StudentId` = `student_table`.`StudentId` WHERE `take_table`.`StudentId`='$studid'";
         
+        if ($studid==0) {
+            $sql = "SELECT `take_table`.*, `student_table`.*
+FROM `take_table` 
+	LEFT JOIN `student_table` ON `take_table`.`StudentId` = `student_table`.`StudentId`;";
+            
+        }
         $queryResult = $this->getConnection()->query($sql);
         
         if (mysqli_num_rows($queryResult) > 0) {

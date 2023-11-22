@@ -1,46 +1,47 @@
 <?php
 session_start();
 
-    if (!isset($_SESSION["loggedinSEPTS"])) {
-        header("location: login.php");
-        exit();
-    }
+if (!isset($_SESSION["loggedinSEPTS"])) {
+    header("location: login.php");
+    exit();
+}
+
+
+if (!isset($_SESSION["RoleSEPTS"]) || $_SESSION["RoleSEPTS"] != "Instructor") {
+    header("location: 404.php");
+    exit();
+}
+
+require_once ('model/InstructorModel.php');
+$ins=new InstructorModel();
+
+
+require_once ('model/MaterialsModel.php');
+$matO=new MaterialsModel();
+
+
+require_once ('model/QuizModel.php');
+$QO=new QuizModel();
+
+$matid=0;
+$mat=null;
+$qid=0;
+$qui=null;
+$quiz_has_been_taken=FALSE;
+
+if ($ins->isRequestPost()) {
     
-    
-    if (!isset($_SESSION["RoleSEPTS"]) || $_SESSION["RoleSEPTS"] != "Instructor") {
-        header("location: 404.php");
-        exit();
-    }
-    
-    require_once ('model/InstructorModel.php');
-    $ins=new InstructorModel();
-    
-    
-    require_once ('model/MaterialsModel.php');
-    $matO=new MaterialsModel();
-    
-    
-    require_once ('model/QuizModel.php');
-    $QO=new QuizModel();
-    
-    $matid=0;
-    $mat=null;
-    $qid=0;
-    $qui=null;
-    $quiz_has_been_taken=FALSE;
-    
-    if ($ins->isRequestPost()) {
+    try {
         
-       try {            
-           
         $qid=$matO->escapeString($_POST['qid']);
         $matid=$matO->escapeString($_POST['matid']);
+        $topicid=$matO->escapeString($_POST['topicid']);
         $passing=$matO->escapeString($_POST['passing']);
         $total=$matO->escapeString($_POST['totalitem']);
         $statusq=$matO->escapeString($_POST['statusq']);
         $currentDate = $QO->getCurrentDate();
         
-        $quizid=$QO->addEditQuiz($qid, $matid, $currentDate, $passing, $total, $statusq);
+        $quizid=$QO->addEditQuiz($qid, $matid, $currentDate, $passing, $total, $statusq, $topicid);
         
         
         $quiz_has_been_taken=$QO->isQuizTaken($qid);
@@ -49,16 +50,16 @@ session_start();
             if (isset($_POST['question']) && count($_POST['question'])>0) {
                 for ($i = 0; $i < count($_POST['question']); $i++) {
                     
-                     $QO->addQuestion(
-                        $quizid, 
-                        $matO->escapeString($_POST['question'][$i]), 
-                        $matO->escapeString($_POST['ansA'][$i]), 
-                        $matO->escapeString($_POST['ansB'][$i]), 
-                        $matO->escapeString($_POST['ansC'][$i]), 
-                        $matO->escapeString($_POST['ansD'][$i]), 
-                        $matO->escapeString($_POST['ans'][$i]), 
-                        1, 
-                        $matO->escapeString($_POST['points'][$i])); 
+                    $QO->addQuestion(
+                        $quizid,
+                        $matO->escapeString($_POST['question'][$i]),
+                        $matO->escapeString($_POST['ansA'][$i]),
+                        $matO->escapeString($_POST['ansB'][$i]),
+                        $matO->escapeString($_POST['ansC'][$i]),
+                        $matO->escapeString($_POST['ansD'][$i]),
+                        $matO->escapeString($_POST['ans'][$i]),
+                        1,
+                        $matO->escapeString($_POST['points'][$i]));
                 }
             }
         }elseif ($quizid && !$quiz_has_been_taken){
@@ -83,43 +84,43 @@ session_start();
         }
         
         
-         header("location: LearningMaterialsDetails.php?id=".$matid);
-        exit(); 
+        header("location: LearningMaterialsDetails.php?id=".$matid);
+        exit();
         
-        } catch (Exception $e) {
-            echo $e->getMessage();
-        } 
+    } catch (Exception $e) {
+        echo $e->getMessage();
+    }
+    
+    
+}else{
+    
+    if (isset($_GET['m'])&&$_GET['m']!="") {
+        $matid=$_GET['m'];
+        $mat=$matO->get($matid);
+        
+        if (is_null($mat)) {
+            header("location: 404.php");
+            exit();
+        }
         
         
-    }else{   
-        
-        if (isset($_GET['m'])&&$_GET['m']!="") {
-            $matid=$_GET['m'];
-            $mat=$matO->get($matid);
+        if (isset($_GET['q'])&&$_GET['q']!="") {
+            $qid=$QO->escapeString($_GET['q']);
+            $qui=$QO->getQuiz($qid);
             
-            if (is_null($mat)) {
+            if (is_null($qui)) {
                 header("location: 404.php");
                 exit();
             }
             
-            
-            if (isset($_GET['q'])&&$_GET['q']!="") {
-                $qid=$QO->escapeString($_GET['q']);
-                $qui=$QO->getQuiz($qid);
-                
-                if (is_null($qui)) {
-                    header("location: 404.php");
-                    exit();
-                }
-                
-                $quiz_has_been_taken=$QO->isQuizTaken($qid);
-            }
-            
-        }else { 
-            header("location: 404.php");
-            exit();
-        }        
+            $quiz_has_been_taken=$QO->isQuizTaken($qid);
+        }
+        
+    }else {
+        header("location: 404.php");
+        exit();
     }
+}
 
 require_once("views/header.php");
 require_once("views/navi.php");
@@ -178,6 +179,7 @@ require_once("views/navi.php");
     
     
     	<form action="" method="post">
+    	<input type="hidden" value="<?=($mat['TopicId'])?>" name="topicid">
     	<input type="hidden" value="<?=$matid;?>" name="matid">
     	<input type="hidden" value="<?=$qid;?>" name="qid">
         <h1 class=""><?=(!is_null($qui)?"Edit":"Add")?> Quiz 
@@ -206,8 +208,8 @@ require_once("views/navi.php");
                           	<small>Quiz Status:</small>                    
                             <select id="statusq" name="statusq" class="form-select" required="required">
                               <option value="" selected>Choose Status...</option>
-                              <option  value="1" <?=($qui['Status']=="1"?"Selected":"");?>>Active</option>
-                              <option value="0" <?=($qui['Status']=="0"?"Selected":"");?>>Inactive</option>
+                              <option  value="1" <?=(!is_null($qui)&&$qui['Status']=="1"?"Selected":"");?>>Active</option>
+                              <option value="0" <?=(!is_null($qui)&&$qui['Status']=="0"?"Selected":"");?>>Inactive</option>
                             </select>
                           </div>
                                                         

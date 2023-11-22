@@ -23,7 +23,7 @@ VALUES ('$SubjectId','$TopicDescription','$InstructorId', '$status')";
     
     public function get($id)
     {
-        $sql = "SELECT `TopicNo`, `SubjectId`, `TopicDescription`, `InstructorId`, `Status` FROM `topic_table` WHERE `TopicNo`='$id'";
+        $sql = "SELECT `TopicNo`, `SubjectId`, `TopicDescription`, `InstructorId`, `topic_table`.`Status`, subject_table.Subject FROM `topic_table` LEFT JOIN subject_table ON topic_table.SubjectId=subject_table.SubjectCode WHERE `TopicNo`='$id'";
         $queryResult = $this->getConnection()->query($sql);
 
         if (mysqli_num_rows($queryResult) > 0) {
