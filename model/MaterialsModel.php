@@ -86,7 +86,7 @@ FROM `learningmaterials_table`
     
     public function get($id)
     {
-        $sql = "SELECT `learningmaterials_table`.*, `topic_table`.`TopicDescription`, `learningmaterials_category_table`.`CategoryName`, subject_table.Subject, CONCAT(employees_table.Firstname,' ',employees_table.MI,' ',employees_table.Lastname,' ',employees_table.NameExt) AS FullNameIns
+        $sql = "SELECT `learningmaterials_table`.*, `topic_table`.`InstructorId`, `topic_table`.`TopicDescription`, `learningmaterials_category_table`.`CategoryName`, subject_table.Subject, CONCAT(employees_table.Firstname,' ',employees_table.MI,' ',employees_table.Lastname,' ',employees_table.NameExt) AS FullNameIns
 FROM `learningmaterials_table` 
 	LEFT JOIN `topic_table` ON `learningmaterials_table`.`TopicId` = `topic_table`.`TopicNo` 
 	LEFT JOIN `learningmaterials_category_table` ON `learningmaterials_table`.`CategoryId` = `learningmaterials_category_table`.`LMCatId` 

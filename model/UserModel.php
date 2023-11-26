@@ -1,6 +1,7 @@
 <?php
 include_once ('DbConnection.php');
 require_once 'model/SectionModel.php';
+require_once 'model/ChatModel.php';
 
 
 class UserModel extends DbConnection
@@ -32,6 +33,7 @@ class UserModel extends DbConnection
     
     public function check_login($username, $password)
     {
+        $chatM=new ChatModel();
         $uname = $this->escapeString($username);
         $pw = $this->escapeString($password);
         
@@ -76,7 +78,10 @@ class UserModel extends DbConnection
                     
                     $_SESSION["RoleSEPTS"] = "Instructor";
                     $_SESSION["RoleIdSEPTS"] = $rowRole['RoleId'];
-                    $_SESSION["PhotoSEPTS"] = ($rowEmp['Photo']!=""?$rowEmp['Photo']:"img/undraw_profile.svg");                    
+                    $_SESSION["PhotoSEPTS"] = ($rowEmp['Photo']!=""?$rowEmp['Photo']:"img/undraw_profile.svg");  
+                    
+                    $unreadmsg=$chatM->getAllUnviewedMessage($rowEmp['EmpKey'], 0);
+                    $_SESSION["unread_msg"]=(is_null($unreadmsg)?0:mysqli_num_rows($unreadmsg));
                 }
                 
             }else if (! is_null($row["StudentId"]) && $row["StudentId"]!="") {
@@ -98,7 +103,9 @@ class UserModel extends DbConnection
                     
                     $secO=new SectionModel();
                     $_SESSION["StudentClassSection"]=(is_null($secO->getTopSY())?0:$secO->getStudSec($rowEmp['StudentId'], $secO->getTopSY()['SYCode'])['SectionId']);
-                  
+                    
+                    $unreadmsg=$chatM->getAllUnviewedMessage(0, $rowEmp['StudentId']);
+                    $_SESSION["unread_msg"]=(is_null($unreadmsg)?0:mysqli_num_rows($unreadmsg));
                 }
                 
             }else {

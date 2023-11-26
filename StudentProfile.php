@@ -9,6 +9,7 @@
     
     if (!isset($_SESSION["RoleSEPTS"]) || $_SESSION["RoleSEPTS"] != "Student") {
         header("location: 404.php");
+        exit();
     }
    
     require_once ('model/StudentModel.php');

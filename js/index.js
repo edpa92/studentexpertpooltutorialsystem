@@ -1,4 +1,4 @@
-// Getting Elements from DOM
+ // Getting Elements from DOM
 const joinButton = document.getElementById("joinBtn");
 const leaveButton = document.getElementById("leaveBtn");
 const toggleMicButton = document.getElementById("toggleMicBtn");
@@ -13,20 +13,27 @@ let meetingId = "";
 let isMicOn = false;
 let isWebCamOn = false;
 
+
+
+
 function initializeMeeting() {
 	window.VideoSDK.config(TOKEN);
 
   meeting = window.VideoSDK.initMeeting({
     meetingId: meetingId, // required
-    name: "Thomas Edison", // required
+    name: name, // required
     micEnabled: true, // optional, default: true
     webcamEnabled: true, // optional, default: true
   });
 
   meeting.join();
+  
+   
 
   // Creating local participant
   createLocalParticipant();
+  
+  
 
   // Setting local participant stream
   meeting.localParticipant.on("stream-enabled", (stream) => {
@@ -90,11 +97,17 @@ function createVideoElement(pId, name) {
   videoElement.classList.add("video-frame");
   videoElement.setAttribute("id", `v-${pId}`);
   videoElement.setAttribute("playsinline", true);
-  videoElement.setAttribute("width", "300");
+  videoElement.setAttribute("width", "600");
   videoFrame.appendChild(videoElement);
 
-  let displayName = document.createElement("div");
-  displayName.innerHTML = `Name : ${name}`;
+  let displayName = document.createElement("div");  
+  
+  if(nameinsession==name){
+  	displayName.innerHTML = `(You) ${name}`;
+  }else{  
+  	displayName.innerHTML = `${name}`;
+  }
+  
 
   videoFrame.appendChild(displayName);
   return videoFrame;
@@ -140,7 +153,7 @@ function setTrack(stream, audioElement, participant, isLocal) {
 }
 
 // Join Meeting Button Event Listener
-joinButton.addEventListener("click", async () => {
+/*joinButton.addEventListener("click", async () => {
   document.getElementById("join-screen").style.display = "none";
   textDiv.textContent = "Joining the meeting...";
 
@@ -149,10 +162,12 @@ joinButton.addEventListener("click", async () => {
 
   initializeMeeting();
 });
+*/
+
 
 // Create Meeting Button Event Listener
-createButton.addEventListener("click", async () => {
-  document.getElementById("join-screen").style.display = "none";
+ async function initChatRoom(){
+  //document.getElementById("join-screen").style.display = "none";
   textDiv.textContent = "Please wait, we are joining the meeting";
 
   // API call to create meeting
@@ -168,7 +183,7 @@ createButton.addEventListener("click", async () => {
   meetingId = roomId;
 
   initializeMeeting();
-});
+};
 
 
 // leave Meeting Button Event Listener
@@ -207,5 +222,4 @@ toggleWebCamButton.addEventListener("click", async () => {
   }
   isWebCamOn = !isWebCamOn;
 });
-
 

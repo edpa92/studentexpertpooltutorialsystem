@@ -23,17 +23,36 @@
           <li><a href="LearningMaterials.php" class="nav-link px-2 link-body-emphasis">Materials</a></li>
           <li><a href="Quizes.php" class="nav-link px-2 link-body-emphasis">Quizes</a></li>
           <li><a href="Lessons.php" class="nav-link px-2 link-body-emphasis">Lessons</a></li>
+          <li>        	 
+             <div class="dropdown text-end">
+              <a id="msg_menu" title="Unview/unopen Message" href="#" class="nav-link px-2 link-body-emphasis" data-bs-toggle="dropdown" aria-expanded="false">
+             	Messages<span class="badge text-bg-danger" id="unread_span"><?=($_SESSION["unread_msg"]==0?"":$_SESSION["unread_msg"]); ?></span>
+             </a>
+              <ul id="messageul" class="dropdown-menu text-small">  
+              </ul>
+            </div>
+         </li>
           <?php }?>
           
           <?php if($_SESSION["RoleSEPTS"]=="Student"){
           ?>
           <li><a href="index.php" class="nav-link px-2 link-body-emphasis">Home</a></li>
+          <li>        	 
+             <div class="dropdown text-end">
+              <a id="msg_menu" title="Unview/unopen Message" href="#" class="nav-link px-2 link-body-emphasis" data-bs-toggle="dropdown" aria-expanded="false">
+             	Messages<span class="badge text-bg-danger" id="unread_span"><?=($_SESSION["unread_msg"]==0?"":$_SESSION["unread_msg"]); ?></span>
+             </a>
+              <ul id="messageul" class="dropdown-menu text-small ">      
+              </ul>
+            </div>
+        </li>
           <?php }?>
         </ul>
 
         <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
           <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
         </form>
+        
 
         <div class="dropdown text-end">
           <a href="#" class="d-block text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">

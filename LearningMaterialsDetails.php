@@ -90,6 +90,7 @@ require_once("views/navi.php");
 				<h4>			
 					<a href="QuizAdd.php?m=<?=$id?>" class="btn btn-primary mt-1 me-2 float-end <?=($_SESSION["RoleSEPTS"] == "Instructor"?"d-inline":"d-none");?>">Add Quiz</a>		
 					<a href="LearningMaterialsAdd.php?id=<?=$id?>" class="btn btn-primary mt-1 me-2 float-end <?=($_SESSION["RoleSEPTS"] == "Instructor"?"d-inline":"d-none");?>">Edit</a>
+					<a href="VideoCall.php?m=<?=$id?>&i=<?=($mat['InstructorId']);?>" class="btn btn-primary mt-1 me-2 float-end <?=($_SESSION["RoleSEPTS"] == "Student"?"d-inline":"d-none");?>">Video Chat</a>
 					
 					<?=($mat['Title']);?>		
 				</h4>
