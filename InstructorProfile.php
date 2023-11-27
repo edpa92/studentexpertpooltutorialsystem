@@ -42,6 +42,9 @@
                 $stud->escapeString($_POST['idno']));
             if ($resultEdit) {                
                 echo "<div class='alert alert-success m-3'>Info Updated!</div>";
+                
+                $_SESSION["FullnameSEPTS"] = $_POST['fname']." " . $_POST['mname'] ." " . $_POST['lname'];
+                $_SESSION["NameInSideBarSEPTS"] = $_POST['fname'];
             }
         }
         

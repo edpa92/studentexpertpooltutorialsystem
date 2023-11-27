@@ -101,8 +101,17 @@ class UserModel extends DbConnection
                     $_SESSION["PhotoSEPTS"] = ($rowEmp['Image']!=""&&$rowEmp['Image']!=Null?$rowEmp['Image']:"img/undraw_profile.svg");
                     $_SESSION["IsVerifiedSEPTS"] = $rowEmp['EmailVerified'];
                     
+                    $_SESSION["StudentClassSection"]=0;
                     $secO=new SectionModel();
-                    $_SESSION["StudentClassSection"]=(is_null($secO->getTopSY())?0:$secO->getStudSec($rowEmp['StudentId'], $secO->getTopSY()['SYCode'])['SectionId']);
+                    if (!is_null($secO->getTopSY())) {
+                        
+                        $sect=$secO->getStudSec($rowEmp['StudentId'], $secO->getTopSY()['SYCode']);
+                        if ($sect!=0) {
+                            
+                            $_SESSION["StudentClassSection"]=$sect['SectionId'];
+                        }
+                    }
+                    
                     
                     $unreadmsg=$chatM->countAllUnviewedMessage(0, $rowEmp['StudentId']);
                     $_SESSION["unread_msg"]=(is_null($unreadmsg)?0:$unreadmsg['Unviewed']);

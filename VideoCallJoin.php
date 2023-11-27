@@ -22,7 +22,7 @@ require_once("model/ChatModel.php");
 $chatM= new ChatModel();
 
 
-if (is_null($chatM->getChatMessageHasMeetingId($chatM->escapeString($_GET['m'])))) {
+if (is_null($chatM->getChatHasMeetingId($chatM->escapeString($_GET['m'])))) {
     header("location: 404.php");
     exit();
 }

@@ -82,7 +82,9 @@ $(function(){
 	var sender_studid=<?=$stud_id?>;
 		   		
 	$(document).on("click", ".chat_combo", function(){
+		$(".chat_combo").removeClass("active");
 		$(this).addClass("active");
+		
 		var chat_id=$(this).attr('id');
 		
 		$.ajax({

@@ -203,9 +203,9 @@ WHERE chat_table.StudentId='$studid' AND (message_table.SenderIns IS NOT NULL AN
     }
 	
     
-    public function getChatMessageHasMeetingId($mettingId)
+    public function getChatHasMeetingId($mettingId)
     {
-        $sql = "SELECT `MessageId`, `ChatId`, `SenderStudent`, `SenderIns`, `SendDateTime`, `Message`, `Viewed` FROM `message_table` WHERE `Message`='meeting ID:$mettingId' LIMIT 1";
+        $sql = "SELECT * FROM `chat_table` WHERE `MeetingId`='$mettingId'";
         $queryResult = $this->getConnection()->query($sql);
         
         if (mysqli_num_rows($queryResult) > 0) {
