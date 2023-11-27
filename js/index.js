@@ -168,7 +168,7 @@ function setTrack(stream, audioElement, participant, isLocal) {
 // Create Meeting Button Event Listener
  async function initChatRoom(){
   //document.getElementById("join-screen").style.display = "none";
-  textDiv.textContent = "Please wait, we are joining the meeting";
+  textDiv.textContent = "Please wait, we are creating the meeting";
 
   // API call to create meeting
   const url = `https://api.videosdk.live/v2/rooms`;

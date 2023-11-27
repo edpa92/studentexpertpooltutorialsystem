@@ -25,10 +25,29 @@ require_once("model/InstructorModel.php");
 $insM= new InstructorModel();
 
 
+require_once("model/ChatModel.php");
+$chatM= new ChatModel();
+
+
 if (is_null($studM->getStudent($studM->escapeString($_GET['s']))) || is_null($insM->getInstructor($studM->escapeString($_GET['i'])))) {
     header("location: 404.php");
     exit();
 }
+
+
+$chat=$chatM->isChatExisted($studM->escapeString($_GET['i']),$studM->escapeString($_GET['s']));
+
+if(!is_null($chat) && $chat['MeetingId']!="" && !is_null($chat['MeetingId'])) {
+    $senderinsId=($_SESSION["RoleSEPTS"] == "Instructor"?$_SESSION["EmpIdSEPTS"]:0);
+    $senderstudId=($_SESSION["RoleSEPTS"] == "Student"?$_SESSION["StudentId"]:0);
+    
+    $chatM->addMessage($chat['ChatId'], $senderstudId, $senderinsId, $chatM->getCurrentDate(), "meeting ID:".$chat['MeetingId']);
+    
+    header("location: VideoCallJoin.php?m=".$chat['MeetingId']);
+    exit();
+}
+
+
 
 
 require_once("views/header.php");
@@ -78,14 +97,15 @@ require_once("views/footer.php");
     <script>
     $(function(){
 
-function addChat(instructorsId, studId, senderinsId, senderstudId, message){
+function addChat(instructorsId, studId, senderinsId, senderstudId, message, meetingid){
 		// Get the form data
 		  var formData = {
 		    instructorsId: instructorsId,
 		    studId:studId,
 		    senderstudId:senderstudId,
 		    senderinsid:senderinsId,
-		    msg:message
+		    msg:message,
+		    meetingid:meetingid
 		  };
 		
 		  // Send the form data to the server using AJAX
@@ -105,7 +125,7 @@ function addChat(instructorsId, studId, senderinsId, senderstudId, message){
 	}
 	
 	async function InitChatroom(){
-		textDiv.textContent = "Please wait, we are joining the meeting";
+		textDiv.textContent = "Please wait, we are creating the meeting";
 
 		  // API call to create meeting
 		  const url = `https://api.videosdk.live/v2/rooms`;
@@ -123,7 +143,7 @@ function addChat(instructorsId, studId, senderinsId, senderstudId, message){
 		 initializeMeeting();
 		 
 		  if (meetingId != 'undefined' && roomId!= 'undefined') {
-		 	addChat(instructorsId, studId, senderinsId, senderstudId, "meeting ID:"+ meetingId);
+		 	addChat(instructorsId, studId, senderinsId, senderstudId, "meeting ID:"+ meetingId, meetingId);
 		 }		  
 		  
 	}

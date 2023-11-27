@@ -29,6 +29,8 @@ if ($chatM->isRequestPost()) {
     $senderstudId=$chatM->escapeString($_POST['senderstudId']);
     $senderinsid=$chatM->escapeString($_POST['senderinsid']);
     
+    $meetingid=$chatM->escapeString($_POST['meetingid']);
+    
     $msg=$chatM->escapeString($_POST['msg']);
     
     $chatid=0;
@@ -39,7 +41,7 @@ if ($chatM->isRequestPost()) {
     if (!is_null($chat)) {
         $chatid=$chat['ChatId'];
     }else {
-        $chatid=$chatM->addChat($studId, $instructorsId, $chatM->getCurrentDate());
+        $chatid=$chatM->addChat($studId, $instructorsId, $chatM->getCurrentDate(),$meetingid);
     }
     
     $ismsgadded=$chatM->addMessage($chatid, $senderstudId, $senderinsid, $chatM->getCurrentDate(), $msg);

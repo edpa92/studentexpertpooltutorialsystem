@@ -99,6 +99,7 @@ $(function(){
 		      var is_ins=<?=($_SESSION["RoleSEPTS"] == "Instructor"?1:0)?>;
 		      var float_msg="";
 		      var msg_name=(value.INSNAME!=null)?value.INSNAME:value.STUDNAME;
+		     	
 		     	if(is_ins && value.SenderIns!=null){
 		     		float_msg="float-end";
 		     		msg_name="You";
@@ -108,11 +109,18 @@ $(function(){
 		     		float_msg="float-end";
 		     		msg_name="You";
 		     	}
+		     	
+		     	var msg=value.Message;
+		     	if(msg.startsWith("meeting ID:")){
+		     		var metid=msg.substring(11);
+		     		msg="<a href='VideoCallJoin.php?m="+metid+"'>JOIN VIDEO CALL...</a>"
+		     	}
+		     	
 		      	$('#msgdiv').append(
                 '<li class="list-group-item  justify-content-between align-items-start">'+
                         '<div class="ms-2 me-auto '+float_msg+'">'+
                           '<div class="fw-bold ">'+msg_name+'</div>'+
-                          '<em>'+value.Message+'</em>'+
+                          '<em>'+msg+'</em>'+
                         '</div>'+
                       '</li>');
 		   });
@@ -167,7 +175,8 @@ $(function(){
 		    studId:studId,
 		    senderstudId:senderstudId,
 		    senderinsid:senderinsId,
-		    msg:message
+		    msg:message,
+		    meetingid:0
 		  };
 		
 		  // Send the form data to the server using AJAX

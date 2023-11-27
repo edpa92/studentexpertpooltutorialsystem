@@ -8,20 +8,29 @@ class ChatModel extends DbConnection{
 	}
 	
 	
-	public function addChat($StudentId,$InstructorId,$DateCreated)
+	public function addChat($StudentId,$InstructorId,$DateCreated, $meeting_id)
     {  	
-	    	$sql = "INSERT INTO `chat_table`(`StudentId`, `InstructorId`, `DateCreated`) 
-VALUES ('$StudentId','$InstructorId','$DateCreated')";
+	    	$sql = "INSERT INTO `chat_table`(`StudentId`, `InstructorId`, `DateCreated`, `MeetingId`) 
+VALUES ('$StudentId','$InstructorId','$DateCreated','$meeting_id')";
 	
 	    	
 	        
 	    	return $this->getConnection()->query($sql)?$this->connection->insert_id:0;    	
     }
     
+    public function editChatMeetingId($chatid, $meeting_id)
+    {
+        $sql = "UPDATE `chat_table` SET `MeetingId`='$meeting_id' WHERE `ChatId`='$chatid'";
+        
+        
+        
+        return $this->getConnection()->query($sql);
+    }
+    
     
     public function getChat($chatid)
     {
-        $sql = "SELECT `ChatId`, `StudentId`, `InstructorId`, `DateCreated` FROM `chat_table` WHERE `ChatId`='$chatid'";
+        $sql = "SELECT `ChatId`, `StudentId`, `InstructorId`, `DateCreated`, `MettingId` FROM `chat_table` WHERE `ChatId`='$chatid'";
         $queryResult = $this->getConnection()->query($sql);
 
         if (mysqli_num_rows($queryResult) > 0) {
@@ -34,12 +43,12 @@ VALUES ('$StudentId','$InstructorId','$DateCreated')";
     
     public function getAllChat($ins_id, $studid)
     {
-        $sql = "SELECT `ChatId`, `StudentId`, `InstructorId`,  `DateCreated` FROM `chat_table`";
+        $sql = "SELECT `ChatId`, `StudentId`, `InstructorId`,  `DateCreated`, `MettingId` FROM `chat_table`";
         
         if ($ins_id!=0) {
-            $sql = "SELECT `ChatId`, `StudentId`, `InstructorId`,  `DateCreated` FROM `chat_table`";
+            $sql = "SELECT `ChatId`, `StudentId`, `InstructorId`,  `DateCreated`, `MettingId` FROM `chat_table`";
         }else if ($studid!=0) {
-            $sql = "SELECT `ChatId`, `StudentId`, `InstructorId`,  `DateCreated` FROM `chat_table`";
+            $sql = "SELECT `ChatId`, `StudentId`, `InstructorId`,  `DateCreated`, `MettingId` FROM `chat_table`";
         }
         
         $queryResult = $this->getConnection()->query($sql);
@@ -53,7 +62,7 @@ VALUES ('$StudentId','$InstructorId','$DateCreated')";
     
     public function isChatExisted($instructorsId,$studId)
     {
-        $sql = "SELECT * FROM `chat_table` WHERE `StudentId`='$studId' AND `InstructorId`='$instructorsId' ";
+        $sql = "SELECT `ChatId`, `StudentId`, `InstructorId`, `DateCreated`, `MeetingId` FROM `chat_table` WHERE `StudentId`='$studId' AND `InstructorId`='$instructorsId' LIMIT 1";
         $queryResult = $this->getConnection()->query($sql);
         
         if (mysqli_num_rows($queryResult) > 0) {
@@ -193,4 +202,16 @@ WHERE chat_table.StudentId='$studid' AND (message_table.SenderIns IS NOT NULL AN
         return null;
     }
 	
+    
+    public function getChatMessageHasMeetingId($mettingId)
+    {
+        $sql = "SELECT `MessageId`, `ChatId`, `SenderStudent`, `SenderIns`, `SendDateTime`, `Message`, `Viewed` FROM `message_table` WHERE `Message`='meeting ID:$mettingId' LIMIT 1";
+        $queryResult = $this->getConnection()->query($sql);
+        
+        if (mysqli_num_rows($queryResult) > 0) {
+            return $queryResult->fetch_assoc();
+        }
+        
+        return null;
+    }
 }

@@ -8,12 +8,9 @@ $(function(){
 	      id: idinsstud,
 	    },
 	    success: function(response) {
-	      	      
+	      	      $('#unread_span').text("");
 	      if(response.unviewed>0){
-			
-				//console.log(response.unviewed);
-				sessionStorage.setItem('unread_msg', response.unviewed);
-				$('#unread_span').text("");
+				
 		      	$('#unread_span').text(response.unviewed);
 	      }
 	      
