@@ -36,10 +36,11 @@ $(function(){
 	     	      
 		  $('#messageul').html('');
 	      $.each(response, function(index, value) {
-		      //console.log(value);
+		      console.log(value);
 		      $('#messageul').prepend(
-                '<li><a class="dropdown-item" href="#"><small>'+value.NAME+' <span class="badge text-bg-danger">'+value.Unviewed
-+'</span></small><br><small class="text-secondary"><em>'+value.TOPMSG+'</em></small></a></li>'+
+                '<li><a class="dropdown-item" href="Chats.php?ci='+value.ChatId+'"><small>'+value.NAME+' <span class="badge text-bg-danger">'+value.Unviewed
++'</span></small><br><small class="text-secondary"><em>'+value.TOPMSG
++'</em></small></a></li>'+
                 '<li><hr class="dropdown-divider"></li>');
 		   });
 	
@@ -54,5 +55,33 @@ $(function(){
 	$('#msg_menu').click(function(){
 		getAllUnreadMsg(idinsstud);		
 	});
+	
+	function addChat(instructorsId, studId, senderinsId, senderstudId, message){
+		// Get the form data
+		  var formData = {
+		    instructorsId: instructorsId,
+		    studId:studId,
+		    senderstudId:senderstudId,
+		    senderinsid:senderinsId,
+		    msg:message
+		  };
+		
+		  // Send the form data to the server using AJAX
+		  $.ajax({
+		    type: 'POST',
+		    url: 'api/ChatAdd.php', // Replace with the URL of your server-side script
+		    data: formData,
+		    success: function(response) {
+		      // Handle the response from the server
+		      //console.log(response);
+		    },
+			  error: function(xhr, status, error) {
+			    // Handle any errors that occur during the request
+			    console.log(error);
+			  }
+		  });
+	}
+	
+	
 	
 });

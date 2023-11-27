@@ -80,8 +80,8 @@ class UserModel extends DbConnection
                     $_SESSION["RoleIdSEPTS"] = $rowRole['RoleId'];
                     $_SESSION["PhotoSEPTS"] = ($rowEmp['Photo']!=""?$rowEmp['Photo']:"img/undraw_profile.svg");  
                     
-                    $unreadmsg=$chatM->getAllUnviewedMessage($rowEmp['EmpKey'], 0);
-                    $_SESSION["unread_msg"]=(is_null($unreadmsg)?0:mysqli_num_rows($unreadmsg));
+                    $unreadmsg=$chatM->countAllUnviewedMessage($rowEmp['EmpKey'], 0);
+                    $_SESSION["unread_msg"]=(is_null($unreadmsg)?0:$unreadmsg['Unviewed']);
                 }
                 
             }else if (! is_null($row["StudentId"]) && $row["StudentId"]!="") {
@@ -104,8 +104,8 @@ class UserModel extends DbConnection
                     $secO=new SectionModel();
                     $_SESSION["StudentClassSection"]=(is_null($secO->getTopSY())?0:$secO->getStudSec($rowEmp['StudentId'], $secO->getTopSY()['SYCode'])['SectionId']);
                     
-                    $unreadmsg=$chatM->getAllUnviewedMessage(0, $rowEmp['StudentId']);
-                    $_SESSION["unread_msg"]=(is_null($unreadmsg)?0:mysqli_num_rows($unreadmsg));
+                    $unreadmsg=$chatM->countAllUnviewedMessage(0, $rowEmp['StudentId']);
+                    $_SESSION["unread_msg"]=(is_null($unreadmsg)?0:$unreadmsg['Unviewed']);
                 }
                 
             }else {

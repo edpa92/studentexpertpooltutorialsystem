@@ -6,7 +6,8 @@ if (!isset($_SESSION["loggedinSEPTS"])) {
     exit();
 }
 
-if (!isset($_SESSION["RoleSEPTS"])) {
+
+if (!isset($_SESSION["RoleSEPTS"]) || ($_SESSION["RoleSEPTS"] != "Instructor" && $_SESSION["RoleSEPTS"] != "Student")) {
     header("location: 404.php");
     exit();
 }
@@ -14,28 +15,31 @@ if (!isset($_SESSION["RoleSEPTS"])) {
 require_once(dirname(__DIR__) ."/model/ChatModel.php");
     $chatM= new ChatModel();
 
+  
+    
+    
 if ($chatM->isRequestPost()) {
     
     try {
         
-    $materialsId=$chatM->escapeString($_POST['materialsId']);
+   
     $instructorsId=$chatM->escapeString($_POST['instructorsId']);    
     $studId=$chatM->escapeString($_POST['studId']);
     
     $senderstudId=$chatM->escapeString($_POST['senderstudId']);
     $senderinsid=$chatM->escapeString($_POST['senderinsid']);
+    
     $msg=$chatM->escapeString($_POST['msg']);
     
     $chatid=0;
     
     
-    
-    $chat=$chatM->isChatExisted($materialsId, $instructorsId, $studId);
+    $chat=$chatM->isChatExisted($instructorsId, $studId);
     
     if (!is_null($chat)) {
         $chatid=$chat['ChatId'];
     }else {
-        $chatid=$chatM->addChat($studId, $instructorsId, $materialsId, $chatM->getCurrentDate());
+        $chatid=$chatM->addChat($studId, $instructorsId, $chatM->getCurrentDate());
     }
     
     $ismsgadded=$chatM->addMessage($chatid, $senderstudId, $senderinsid, $chatM->getCurrentDate(), $msg);

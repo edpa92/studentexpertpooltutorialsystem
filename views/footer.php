@@ -2,6 +2,8 @@
 <script src="./js/jquery/jquery.min.js"></script>
 <script src="./js/bootstrap5.3.2/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 <script src="./js/fancyTable.js" ></script>
+<script src="https://sdk.videosdk.live/js-sdk/0.0.67/videosdk.js"></script>
+<script src="./js/config.js"></script>
 <script>
 
        	let name="<?=($_SESSION["FullnameSEPTS"]);?>";

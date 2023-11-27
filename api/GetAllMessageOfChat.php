@@ -18,22 +18,21 @@ if (!$chatM->isRequestPost()) {
     
     try {
         
-        $Id=$chatM->escapeString($_GET['id']);
+        $chat_Id=$chatM->escapeString($_GET['chat_id']);        
+        $msgs=$chatM->getAllMessagesOfChat($chat_Id);
         
-        $unviewed=NULL;
-        
-        if (isset($_SESSION["RoleSEPTS"])&& $_SESSION["RoleSEPTS"]=="Student") {
-            $unviewed=$chatM->getAllChatWithUnviewedMessage(0,$Id, FALSE);
-        }elseif (isset($_SESSION["RoleSEPTS"])&&$_SESSION["RoleSEPTS"]=="Instructor") {
-            $unviewed=$chatM->getAllChatWithUnviewedMessage($Id,0, FALSE);
-        }
        
+        
         $rows = array();
-        if (!is_null($unviewed)) {
-            
-            while ($row = $unviewed->fetch_assoc()) {
-                $rows[] = $row;
-            }
+        while ($row = $msgs->fetch_assoc()) {
+            $rows[] = $row;
+        }
+        
+         $_SESSION["unread_msg"]=0;
+         if ($_SESSION["RoleSEPTS"]=="Student") {
+            $chatM->markAllMessagesOfChatViewed($chat_Id,1,0);
+        }elseif ($_SESSION["RoleSEPTS"]=="Instructor") {
+            $chatM->markAllMessagesOfChatViewed($chat_Id,0,1);
         }
         
         // Set the appropriate headers for JSON response
