@@ -32,6 +32,11 @@ $(function(){
 	    success: function(response) {
 	     	      
 		  $('#messageul').html('');
+
+		  $('#messageul').append(
+			'<li><hr class="dropdown-divider"></li>'+
+			'<li><a class="dropdown-item" href="Chats.php">See all</a></li>');
+
 	      $.each(response, function(index, value) {
 		      console.log(value);
 		      $('#messageul').prepend(

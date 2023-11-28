@@ -7,6 +7,7 @@ if (!isset($_SESSION["loggedinSEPTS"])) {
 }
 if (!isset($_SESSION["RoleSEPTS"]) || $_SESSION["RoleSEPTS"] != "Instructor") {
     header("location: 404.php");
+    exit();
 }
 
 

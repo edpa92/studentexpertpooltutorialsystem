@@ -23,6 +23,9 @@ $matO=new MaterialsModel();
 require_once ('model/QuizModel.php');
 $QO=new QuizModel();
 
+require_once ('model/TakeQuizModel.php');
+$tqM=new TakeQuizModel();
+
 $matid=0;
 $mat=null;
 $qid=0;
@@ -45,6 +48,20 @@ if ($ins->isRequestPost()) {
         
         
         $quiz_has_been_taken=$QO->isQuizTaken($qid);
+        
+        if ($quiz_has_been_taken && $quizid) {
+            $takes=$tqM->getAllTQ($qid);
+            if (!is_null($takes)) {
+                while ($rowTake=$takes->fetch_assoc()) {
+                    $tq_id=$rowTake['TakeNo'];
+                    $takescore=$rowTake['TotalScore'];
+                    $PassingScore=($total*($passing/100));
+                    
+                    $tqM->editScoreTQ($tq_id, $takescore, $PassingScore, ($takescore>=$PassingScore?"Passed":"Failed"));
+                    
+                }
+            }
+        }
         
         if (!is_bool($quizid)&&$quizid>0) {
             if (isset($_POST['question']) && count($_POST['question'])>0) {

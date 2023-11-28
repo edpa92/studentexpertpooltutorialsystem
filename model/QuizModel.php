@@ -21,6 +21,7 @@ VALUES ('$TopicId','$DatePosted','$PercentagePassing','$TotalItem','$Status')";
 	            $sql = "UPDATE `quiz_table` SET `PercentagePassing`='$PercentagePassing',
 `TotalItem`='$TotalItem',`Status`='$Status', `DateLastModefied`='$this->currentDate' WHERE `QuizNo`='$id'";
 	            
+	            
 	        }
 	        
 	        return $this->getConnection()->query($sql)&&$id==0?$this->getConnection()->insert_id:TRUE;    	
@@ -33,9 +34,8 @@ VALUES ('$QuizId','$Question','$ChoiceA','$ChoiceB','$ChoiceC','$ChoiceD','$Answ
 	        
 	        return $this->getConnection()->query($sql);    	
     }
-     
-    
-     public function getAllQuiz($matId, $studid)
+         
+    public function getAllQuiz($matId, $studid)
     {
         $sql = "SELECT `QuizNo`, `MaterialId`,`TopicId`, `DatePosted`, `DateLastModefied`, `PercentagePassing`, `TotalItem`, quiz_table.`Status`, COUNT(question_table.QQId) AS QCount,
 (SELECT COUNT(*) AS Taken FROM take_table WHERE take_table.QuizId=quiz_table.QuizNo AND take_table.StudentId='$studid') TakenByStudent
@@ -107,7 +107,7 @@ FROM `quiz_table`
         return null;
     }
     
-     public function getAllQuestionsOfQuiz($quizid)
+    public function getAllQuestionsOfQuiz($quizid)
     {
         $sql = "SELECT `QQId`, `QuizId`, `Question`, `ChoiceA`, `ChoiceB`, `ChoiceC`, `ChoiceD`, `Answer`, `Status`, `Points` FROM `question_table` WHERE `QuizId`='$quizid'";
         
@@ -138,5 +138,22 @@ FROM `quiz_table`
 
         return FALSE;
     }
-	
+
+    public function getAllQuizesOfStudent($stud_id) {
+        $sql="SELECT   `QuizNo`, `TopicId`, `MaterialId`, `DatePosted`, `DateLastModefied`, `PercentagePassing`, CONCAT(`TotalItem`,'(', (SELECT COUNT(question_table.QQId) FROM question_table WHERE question_table.QuizId=quiz_table.QuizNo) ,'Questions)') AS TotalItems, `quiz_table`.`Status`, (SELECT COUNT(take_table.TakeNo) FROM take_table WHERE take_table.QuizId=quiz_table.QuizNo AND take_table.StudentId='$stud_id') AS TakenTimes, CONCAT(subject_table.Subject,' (',topic_table.TopicDescription,')') AS SubTopic
+        FROM `quiz_table`
+        JOIN `take_table` ON `take_table`.`QuizId` = `quiz_table`.`QuizNo`
+        JOIN topic_table ON quiz_table.TopicId = topic_table.TopicNo
+        JOIN subject_table ON topic_table.SubjectId = subject_table.SubjectCode
+        WHERE take_table.StudentId='$stud_id'
+        GROUP BY quiz_table.QuizNo";
+            
+        $queryResult = $this->getConnection()->query($sql);
+        
+        if (mysqli_num_rows($queryResult) > 0) {
+            return $queryResult;
+        }
+        
+        return null;        
+    }
 }
