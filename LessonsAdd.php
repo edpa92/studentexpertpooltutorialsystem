@@ -29,7 +29,7 @@
         $result=$lesObj->addEdit($id, 
             $subid, 
             $topic, 
-            $_SESSION["EmpIdCSHS"], 
+            $_SESSION["EmpIdSEPTS"], 
             $status); 
         
         if ($result) {

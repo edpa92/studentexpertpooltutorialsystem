@@ -6,10 +6,10 @@ if (!isset($_SESSION["loggedinSEPTS"])) {
     exit();
 }
 require_once ('model/StudentModel.php');
-$ins=new StudentModel();
+$stud=new StudentModel();
 
 if (isset($_GET['id']) && $_GET['id']!="") {
-    $ins->Verify($ins->escapeString($_GET['id']));
+    $stud->Verify($stud->escapeString($_GET['id']));
 }
 
 header("location: UserManagment.php?u=i&m=Student Successfully verified!");

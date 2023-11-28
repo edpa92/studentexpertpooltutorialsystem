@@ -40,11 +40,23 @@ class SectionModel extends DbConnection{
         
         return $this->getConnection()->query($sql);
     }
-	
-    
+	    
     public function getAll()
     {
         $sql = "SELECT * FROM `section_table`";
+        
+        $queryResult = $this->getConnection()->query($sql);
+        
+        if (mysqli_num_rows($queryResult) > 0) {
+            return $queryResult;
+        }
+        
+        return null;
+    }
+    
+    public function getAllActive()
+    {
+        $sql = "SELECT * FROM `section_table` WHERE Status='1'";
         
         $queryResult = $this->getConnection()->query($sql);
         
@@ -79,4 +91,58 @@ class SectionModel extends DbConnection{
         return FALSE;
     }
 	
+    public function getTopSY()
+    {
+        $sql = "SELECT `SYCode`, `YearStart`, `YearEnd`, `Status` FROM `schoolyear_table` ORDER BY SYCode DESC LIMIT 1";
+        $queryResult = $this->getConnection()->query($sql);
+
+        if (mysqli_num_rows($queryResult) ==1) {
+            return $queryResult->fetch_assoc();
+        }
+
+        return null;
+    }
+    
+    public function addEditStudSec($StudentId,$SectionId,$SYId)
+    {
+        $sql = "INSERT INTO `studsection_table`(`StudentId`, `SectionId`, `SYId`) VALUES ('$StudentId','$SectionId','$SYId')";
+        
+        if ($this->getStudSec($StudentId, $SYId)!=0) {
+            $sql = "UPDATE `studsection_table` SET `SectionId`='$SectionId' WHERE `StudentId`='$StudentId' AND `SYId`='$SYId'";
+        }
+        
+        try {
+            
+            return $this->getConnection()->query($sql);
+        } catch (mysqli_sql_exception $e) {
+            return FALSE;
+        }
+    }
+    
+    public function getStudSec($studid, $syid)
+    {
+        $sql = "SELECT `SectionId` FROM `studsection_table` WHERE `StudentId`='$studid' AND `SYId`='$syid' LIMIT 1";
+        $queryResult = $this->getConnection()->query($sql);
+        
+        if (mysqli_num_rows($queryResult) > 0) {
+            return $queryResult->fetch_assoc();
+        }
+        
+        return 0;
+    }
+
+    public function getAllActiveNotLoad($insId)
+    {
+        $sql = "SELECT * FROM `section_table` WHERE Status='1' AND SectionId NOT IN(SELECT SectionId FROM instructorload_table WHERE InstructorId='$insId')";
+        
+        $queryResult = $this->getConnection()->query($sql);
+        
+        if (mysqli_num_rows($queryResult) > 0) {
+            return $queryResult;
+        }
+        
+        return null;
+    }
+
+
 }

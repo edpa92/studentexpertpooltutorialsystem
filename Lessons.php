@@ -7,6 +7,7 @@ if (!isset($_SESSION["loggedinSEPTS"])) {
 }
 if (!isset($_SESSION["RoleSEPTS"]) || $_SESSION["RoleSEPTS"] != "Instructor") {
     header("location: 404.php");
+    exit();
 }
 
 require_once("model/LessonModel.php");
@@ -31,7 +32,7 @@ require_once("views/navi.php");
       </thead>
       <tbody>      
       <?php 
-      $lesO=$les->getAll($_SESSION["EmpIdCSHS"]);
+      $lesO=$les->getAll($_SESSION["EmpIdSEPTS"]);
 	    if (!is_null($lesO)) {
 	        while ($row=$lesO->fetch_assoc()) { ?> 
         <tr>

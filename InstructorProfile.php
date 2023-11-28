@@ -9,10 +9,11 @@
     
     if (!isset($_SESSION["RoleSEPTS"]) || $_SESSION["RoleSEPTS"] != "Instructor") {
         header("location: 404.php");
+        exit();
     }
     
     require_once ('model/InstructorModel.php');
-    $ins=new InstructorModel();
+    $stud=new InstructorModel();
     
     
     require_once ('model/UserModel.php');
@@ -26,21 +27,24 @@
     require_once("views/header.php");
     require_once("views/navi.php");
     
-    if ($ins->isRequestPost()) {  
-        $id=$ins->escapeString($_POST['Id']);
+    if ($stud->isRequestPost()) {  
+        $id=$stud->escapeString($_POST['Id']);
         
         if (isset($_POST['formInfo'])) {
             
-            $resultEdit=$ins->EditInfo($id,
-                $ins->escapeString($_POST['fname']), 
-                $ins->escapeString($_POST['mname']), 
-                $ins->escapeString($_POST['lname']), 
-                $ins->escapeString($_POST['xname']), 
-                $ins->escapeString($_POST['gender']), 
-                $ins->escapeString($_POST['contact']), 
-                $ins->escapeString($_POST['idno']));
+            $resultEdit=$stud->EditInfo($id,
+                $stud->escapeString($_POST['fname']), 
+                $stud->escapeString($_POST['mname']), 
+                $stud->escapeString($_POST['lname']), 
+                $stud->escapeString($_POST['xname']), 
+                $stud->escapeString($_POST['gender']), 
+                $stud->escapeString($_POST['contact']), 
+                $stud->escapeString($_POST['idno']));
             if ($resultEdit) {                
                 echo "<div class='alert alert-success m-3'>Info Updated!</div>";
+                
+                $_SESSION["FullnameSEPTS"] = $_POST['fname']." " . $_POST['mname'] ." " . $_POST['lname'];
+                $_SESSION["NameInSideBarSEPTS"] = $_POST['fname'];
             }
         }
         
@@ -68,18 +72,18 @@
         
         elseif (isset($_POST['formPhoto'])) {
             
-            $idins=$ins->escapeString($_POST['Id']);
+            $idins=$stud->escapeString($_POST['Id']);
             $image="";
             if (!is_null($_FILES['file-input-photo']["name"]) && $_FILES['file-input-photo']["name"]!=="") {
                 
                 $image=$upload->UploadFile('file-input-photo', "img/ins/",$_SESSION["EmpIdCodeSEPTS"]);
             }
             
-            $ins->EditPhoto($idins, $image);
+            $stud->EditPhoto($idins, $image);
         }
     }
     
-    $insO=$ins->getInstructor($_SESSION["EmpIdCSHS"]);
+    $insO=$stud->getInstructor($_SESSION["EmpIdSEPTS"]);
     
     ?>
 <div class="container d-flex justify-content-center">

@@ -71,5 +71,6 @@ class DbConnection{
         $_SESSION['captcha']=$random_string;
     }
 
+    
 }
 ?>

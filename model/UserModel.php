@@ -1,5 +1,7 @@
 <?php
 include_once ('DbConnection.php');
+require_once 'model/SectionModel.php';
+require_once 'model/ChatModel.php';
 
 
 class UserModel extends DbConnection
@@ -31,6 +33,7 @@ class UserModel extends DbConnection
     
     public function check_login($username, $password)
     {
+        $chatM=new ChatModel();
         $uname = $this->escapeString($username);
         $pw = $this->escapeString($password);
         
@@ -69,13 +72,16 @@ class UserModel extends DbConnection
                     $_SESSION["FullnameSEPTS"] = $rowEmp["Firstname"]." " . $rowEmp["MI"] ." " . $rowEmp["Lastname"];
                     $_SESSION["NameInSideBarSEPTS"] = $rowEmp["Firstname"];
                     $_SESSION["DesignationSEPTS"] = $rowEmp["Designation"];
-                    $_SESSION["EmpIdCSHS"] =  $rowEmp['EmpKey'];
+                    $_SESSION["EmpIdSEPTS"] =  $rowEmp['EmpKey'];
                     $_SESSION["EmpIdCodeSEPTS"] =  $rowEmp['EmpId'];                    
                     $_SESSION["IsVerifiedSEPTS"] =  $rowEmp['Verified'];
                     
                     $_SESSION["RoleSEPTS"] = "Instructor";
                     $_SESSION["RoleIdSEPTS"] = $rowRole['RoleId'];
-                    $_SESSION["PhotoSEPTS"] = ($rowEmp['Photo']!=""?$rowEmp['Photo']:"img/undraw_profile.svg");                    
+                    $_SESSION["PhotoSEPTS"] = ($rowEmp['Photo']!=""?$rowEmp['Photo']:"img/undraw_profile.svg");  
+                    
+                    $unreadmsg=$chatM->countAllUnviewedMessage($rowEmp['EmpKey'], 0);
+                    $_SESSION["unread_msg"]=(is_null($unreadmsg)?0:$unreadmsg['Unviewed']);
                 }
                 
             }else if (! is_null($row["StudentId"]) && $row["StudentId"]!="") {
@@ -94,7 +100,21 @@ class UserModel extends DbConnection
                     $_SESSION["RoleSEPTS"] = "Student";
                     $_SESSION["PhotoSEPTS"] = ($rowEmp['Image']!=""&&$rowEmp['Image']!=Null?$rowEmp['Image']:"img/undraw_profile.svg");
                     $_SESSION["IsVerifiedSEPTS"] = $rowEmp['EmailVerified'];
-                  
+                    
+                    $_SESSION["StudentClassSection"]=0;
+                    $secO=new SectionModel();
+                    if (!is_null($secO->getTopSY())) {
+                        
+                        $sect=$secO->getStudSec($rowEmp['StudentId'], $secO->getTopSY()['SYCode']);
+                        if ($sect!=0) {
+                            
+                            $_SESSION["StudentClassSection"]=$sect['SectionId'];
+                        }
+                    }
+                    
+                    
+                    $unreadmsg=$chatM->countAllUnviewedMessage(0, $rowEmp['StudentId']);
+                    $_SESSION["unread_msg"]=(is_null($unreadmsg)?0:$unreadmsg['Unviewed']);
                 }
                 
             }else {
@@ -241,8 +261,8 @@ class UserModel extends DbConnection
     }
             
     public function isPasswordAndIdSame(){
-        if (isset($_SESSION["EmpIdCSHS"])) {
-            $empId=$_SESSION["EmpIdCSHS"];
+        if (isset($_SESSION["EmpIdSEPTS"])) {
+            $empId=$_SESSION["EmpIdSEPTS"];
             $sql = "SELECT `UserId`, `StudentId`, `EmpId`, `Username`, `Password`, `LastLogin`, `Status` FROM `users_table` WHERE `EmpId`=$empId";
             $query=$this->getConnection()->query($sql);
             $row=$query->fetch_assoc();
