@@ -29,6 +29,7 @@ require_once("views/navi.php");
               <th scope="col">Subject(Topic)</th>
               <th scope="col">TotalItem</th>
               <th scope="col">Passing %</th>
+              <th scope="col">Retaking Allowed</th>
               <th scope="col">TakenTimes</th>
               <th scope="col">Action</th>
             </tr>
@@ -43,8 +44,11 @@ require_once("views/navi.php");
               <td><?=($row['SubTopic']);?></td>
               <td><?=($row['TotalItems']);?></td>
               <td><?=($row['PercentagePassing']);?></td>
+              <td><?=($row['Retaking']==1?"Yes":"No")?></td>
               <td><?=($row['TakenTimes']);?></td>
-              <td><a data-bs-toggle="modal" data-bs-target="#quizModal<?=$row['QuizNo']?>" class="btn btn-sm btn-primary" href="#">View Scores</a>
+              <td>
+              <a class="btn btn-sm btn-primary m-1 <?=($row['Retaking']==1?"d-block":($row['TakenTimes']>0?"d-none":"d-block"));?> " href="TakeQuiz.php?qid=<?=($row['QuizNo']); ?>">Take Quiz</a>
+              <a data-bs-toggle="modal" data-bs-target="#quizModal<?=$row['QuizNo']?>" class="btn btn-sm btn-primary" href="#">View Scores</a>
               
                <!-- Modal -->
                             <div class="modal fade" id="quizModal<?=$row['QuizNo']?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">

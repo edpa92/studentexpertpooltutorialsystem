@@ -122,6 +122,7 @@ require_once("views/navi.php");
                       <th scope="col">Passing (%)</th>
                       <th scope="col">Total Items</th>
                       <th scope="col"># of Question</th>
+                      <th scope="col">Studet Can Take More than Once</th>
                       <th scope="col">Status</th>
                       <th scope="col">Action</th>
                     </tr>
@@ -135,10 +136,11 @@ require_once("views/navi.php");
                           <td><?=$row['DatePosted']?></td>
                           <td><?=$row['PercentagePassing']?>%</td>
                           <td><?=$row['TotalItem']?> points</td>
-                          <td><?=$row['QCount']?> Question(s)</td>
+                          <td><?=$row['QuestionsCount']?> Question(s)</td>
+                          <td><?=($row['Retaking']==1?"Yes":"No")?></td>
                           <td><?=($row['Status']==0?"Inactive":"Active")?></td>
                           <td>
-                          <?php if($_SESSION["RoleSEPTS"] == "Student"&&$row['QCount']>0 && $row['Status']==1){?>
+                          <?php if($_SESSION["RoleSEPTS"] == "Student"&&$row['QuestionsCount']>0 && $row['Status']==1 && ($row['Retaking']==1 || $row['TakenByStudent']==0)){?>
                           <a href="TakeQuiz.php?qid=<?=$row['QuizNo']?>" class="btn btn-primary ">Take Quiz</a>
                          <?php }?>
                          <?php if($_SESSION["RoleSEPTS"] == "Student" && $row['TakenByStudent']>0){?>

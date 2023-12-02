@@ -46,8 +46,9 @@ if ($ins->isRequestPost()) {
         $total=$matO->escapeString($_POST['totalitem']);
         $statusq=$matO->escapeString($_POST['statusq']);
         $currentDate = $QO->getCurrentDate();
+        $retake=isset($_POST['retake'])?1:0;
         
-        $quizid=$QO->addEditQuiz($qid, $matid, $currentDate, $passing, $total, $statusq, $tid);
+        $quizid=$QO->addEditQuiz($qid, $matid, $currentDate, $passing, $total, $statusq, $tid, $retake);
         
         
         $quiz_has_been_taken=$QO->isQuizTaken($qid);
@@ -211,7 +212,8 @@ require_once("views/navi.php");
                         Quiz Details 
                       </div>
                       <div class="card-body">                      	
-                        <h5 class="card-title">(<?=($topic['Subject'])?>) <?=($topic['TopicDescription'])?></h5><div class="row g-3 mt-1">
+                        <h5 class="card-title">(<?=($topic['Subject'])?>) <?=($topic['TopicDescription'])?></h5>
+                        <div class="row g-3 mt-1">
                           <div class="col">
                           <small>Percentage Passing (%)</small>                            
                         	<input value="<?=(!is_null($qui)?$qui['PercentagePassing']:"")?>" name="passing" type="number" step=".01" class="form-control" placeholder="0.0 %" required="required">
@@ -227,9 +229,14 @@ require_once("views/navi.php");
                               <option  value="1" <?=(!is_null($qui)&&$qui['Status']=="1"?"Selected":"");?>>Active</option>
                               <option value="0" <?=(!is_null($qui)&&$qui['Status']=="0"?"Selected":"");?>>Inactive</option>
                             </select>
+                          </div>                                                        
+                        </div>                        
+                          <div class="form-check mt-3 ">
+                              <input value="1" class="form-check-input" type="checkbox" id="retake" name="retake" <?=(!is_null($qui)&&$qui['Retaking']=="1"?"Checked":"");?>>
+                              <label class="form-check-label" for="retake">
+                                <strong>Allow students to Retake this Quiz more than once?</strong>
+                              </label>
                           </div>
-                                                        
-                        </div>
                       </div>
                     </div>           			
             	</div>      

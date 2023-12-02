@@ -93,6 +93,7 @@ require_once("views/navi.php");
                           <th scope="col">Passing (%)</th>
                           <th scope="col">Total Items</th>
                           <th scope="col"># of Question</th>
+                          <th scope="col">Retaking</th>
                           <th scope="col">Status</th>
                           <th scope="col">Action</th>
                         </tr>
@@ -107,6 +108,7 @@ require_once("views/navi.php");
                               <td><?=$row['PercentagePassing']?>%</td>
                               <td><?=$row['TotalItem']?> points</td>
                               <td><?=$row['QCount']?> Question(s)</td>
+                              <td><?=($row['Retaking']==1?"Yes":"No")?></td>
                               <td><?=($row['Status']==0?"Inactive":"Active")?></td>
                               <td>
                               <a href="QuizAddForTopic.php?t=<?=$topicid?>&q=<?=$row['QuizNo']?>" class="btn btn-primary btn-sm <?=($_SESSION["RoleSEPTS"] == "Instructor"?"d-inline":"d-none");?>">Edit</a>

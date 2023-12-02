@@ -77,7 +77,7 @@
         
         $qid=$QO->escapeString($_GET['qid']);
         $quiz=$QO->getQuizToTake($qid);
-        if (is_null($quiz) || $quiz['Status']==0) {
+        if (is_null($quiz) || $quiz['Status']==0 || (!$QO->isQuizAllowedTotake($qid, $_SESSION["StudentId"]))) {
             header("location: 404.php");
             exit();
         }

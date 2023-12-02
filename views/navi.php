@@ -52,7 +52,7 @@
              </a>
               <ul id="messageul" class="dropdown-menu text-small ">  
                   <li><hr class="dropdown-divider"></li>
-                  <li><a class="dropdown-item" href="Chats.php">Sign out</a></li>    
+                  <li><a class="dropdown-item" href="Chats.php">See all</a></li>    
               </ul>
             </div>
         </li>
