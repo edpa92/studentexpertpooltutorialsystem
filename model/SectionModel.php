@@ -93,7 +93,7 @@ class SectionModel extends DbConnection{
 	
     public function getTopSY()
     {
-        $sql = "SELECT `SYCode`, `YearStart`, `YearEnd`, `Status` FROM `schoolyear_table` ORDER BY SYCode DESC LIMIT 1";
+        $sql = "SELECT `SYCode`, `YearStart`, `YearEnd`, `Status` FROM `schoolyear_table` WHERE `schoolyear_table`.Status='1' ORDER BY SYCode DESC LIMIT 1";
         $queryResult = $this->getConnection()->query($sql);
 
         if (mysqli_num_rows($queryResult) ==1) {

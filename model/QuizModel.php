@@ -156,4 +156,23 @@ FROM `quiz_table`
         
         return null;        
     }
+
+    public function getAllQuizesForReport($sy_id, $ins_id) {
+        $sql="SELECT `quiz_table`.*, topic_table.TopicDescription, topic_table.TopicNo, subject_table.Subject, subject_table.SubjectCode FROM `quiz_table` 
+LEFT JOIN topic_table on quiz_table.TopicId=topic_table.TopicNo 
+LEFT JOIN subject_table on topic_table.SubjectId=subject_table.SubjectCode 
+LEFT JOIN sectionsubject_table on subject_table.SubjectCode=sectionsubject_table.SubjectId 
+LEFT JOIN section_table on sectionsubject_table.SectionId=section_table.SectionId 
+LEFT JOIN studsection_table on section_table.SectionId=studsection_table.SectionId 
+WHERE studsection_table.SYId='$sy_id' AND topic_table.InstructorId='$ins_id'";
+        
+        $queryResult = $this->getConnection()->query($sql);
+        
+        if (mysqli_num_rows($queryResult) > 0) {
+            return $queryResult;
+        }
+        
+        return null;       
+    }
+
 }

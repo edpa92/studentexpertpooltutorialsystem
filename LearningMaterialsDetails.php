@@ -152,7 +152,7 @@ require_once("views/navi.php");
                                   ?>                      
                             <!-- Modal -->
                             <div class="modal fade" id="quizModal<?=$row['QuizNo']?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                              <div class="modal-dialog modal-dialog-centered">
+                              <div class="modal-dialog modal-lg  modal-dialog-centered">
                                 <div class="modal-content">
                                   <div class="modal-header">
                                     <h1 class="modal-title fs-5" id="exampleModalLabel">Quiz Details</h1>

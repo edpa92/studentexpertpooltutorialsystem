@@ -109,6 +109,7 @@ require_once("views/navi.php");
                               <td><?=$row['QCount']?> Question(s)</td>
                               <td><?=($row['Status']==0?"Inactive":"Active")?></td>
                               <td>
+                              <a href="QuizAddForTopic.php?t=<?=$topicid?>&q=<?=$row['QuizNo']?>" class="btn btn-primary btn-sm <?=($_SESSION["RoleSEPTS"] == "Instructor"?"d-inline":"d-none");?>">Edit</a>
                               <?php if($_SESSION["RoleSEPTS"] == "Student"&&$row['QCount']>0 && $row['Status']==1){?>
                               <a href="TakeQuiz.php?qid=<?=$row['QuizNo']?>" class="btn btn-sm btn-primary ">Take Quiz</a>
                              <?php }?>
@@ -116,13 +117,12 @@ require_once("views/navi.php");
                               <a data-bs-toggle="modal" data-bs-target="#quizModal<?=$row['QuizNo']?>" href="#" class="btn btn-sm btn-primary ">Details</a>
                              <?php }?>
                              
-                              <a href="QuizAddForTopic.php?t=<?=$topicid?>&q=<?=$row['QuizNo']?>" class="btn btn-primary btn-sm <?=($_SESSION["RoleSEPTS"] == "Instructor"?"d-inline":"d-none");?>">Edit</a>
                                   <?php 
                                   if (($_SESSION["RoleSEPTS"] == "Student" || $_SESSION["RoleSEPTS"] == "Instructor")&&$row['TakenByStudent']>0) {                            
                                       ?>                      
                                 <!-- Modal -->
                                 <div class="modal fade" id="quizModal<?=$row['QuizNo']?>" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                  <div class="modal-dialog modal-dialog-centered">
+                                  <div class="modal-dialog modal-lg  modal-dialog-centered">
                                     <div class="modal-content">
                                       <div class="modal-header">
                                         <h1 class="modal-title fs-5" id="exampleModalLabel">Quiz Details</h1>

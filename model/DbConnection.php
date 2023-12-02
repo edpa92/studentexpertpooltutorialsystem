@@ -70,7 +70,10 @@ class DbConnection{
         }
         $_SESSION['captcha']=$random_string;
     }
-
+    
+    public function rand_color() {
+        return sprintf('#%06X', mt_rand(0, 0xFFFFFF));
+    }
     
 }
 ?>

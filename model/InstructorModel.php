@@ -96,4 +96,21 @@ FROM `section_table` LEFT JOIN `instructorload_table` ON `instructorload_table`.
          
          return $this->getConnection()->query($sql);
      }
+
+      public function generatePieChartReport($instructor_id, $sy_id)
+    {
+        $sql = "SELECT `section_table`.*, `instructorload_table`.`InstructorId`, (SELECT COUNT(studsection_table.StudentId) FROM studsection_table WHERE studsection_table.SectionId=section_table.SectionId AND studsection_table.SYId='$sy_id') AS StudCount
+FROM `section_table` 
+	LEFT JOIN `instructorload_table` ON `instructorload_table`.`SectionId` = `section_table`.`SectionId`
+WHERE instructorload_table.InstructorId='$instructor_id'";
+        
+        $queryResult = $this->getConnection()->query($sql);
+        
+        if (mysqli_num_rows($queryResult) > 0) {
+            return $queryResult;
+        }
+        
+        return null;
+    }
+
 }

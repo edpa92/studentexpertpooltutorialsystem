@@ -78,4 +78,23 @@ FROM `take_table`
         return null;
     }
 	
+    public function getAllSUMTOTALSCOREPERSEC($sy_id, $quiz_id, $sec)
+    {
+        $sql = "SELECT SUM(`take_table`.`TotalScore`) SUMTOTALSCORESEC, section_table.Section, take_table.QuizId
+FROM `take_table`
+LEFT JOIN student_table on take_table.StudentId=student_table.StudentId
+LEFT JOIN studsection_table on student_table.StudentId=studsection_table.StudentId
+LEFT JOIN section_table on studsection_table.SectionId=section_table.SectionId
+WHERE studsection_table.SYId='$sy_id' AND take_table.QuizId='$quiz_id' AND section_table.Section='$sec'
+GROUP BY section_table.SectionId";
+        
+        $queryResult = $this->getConnection()->query($sql);
+        
+        if (mysqli_num_rows($queryResult) > 0) {
+            return $queryResult;
+        }
+        
+        return null;
+    }
+    
 }
