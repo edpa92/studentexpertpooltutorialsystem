@@ -104,6 +104,9 @@ FROM `section_table`
 	LEFT JOIN `instructorload_table` ON `instructorload_table`.`SectionId` = `section_table`.`SectionId`
 WHERE instructorload_table.InstructorId='$instructor_id'";
         
+        if ($instructor_id==0) {
+            $sql = "SELECT `section_table`.*, (SELECT COUNT(studsection_table.StudentId) FROM studsection_table WHERE studsection_table.SectionId=section_table.SectionId AND studsection_table.SYId='$sy_id') AS StudCount FROM `section_table`";
+        }
         $queryResult = $this->getConnection()->query($sql);
         
         if (mysqli_num_rows($queryResult) > 0) {
@@ -113,4 +116,55 @@ WHERE instructorload_table.InstructorId='$instructor_id'";
         return null;
     }
 
+     public function countSubOfIns($ins_id)
+    {
+        $sql = "SELECT `subject_table`.*
+FROM `subject_table` 
+	LEFT JOIN `topic_table` ON `topic_table`.`SubjectId` = `subject_table`.`SubjectCode` 
+	LEFT JOIN `employees_table` ON `topic_table`.`InstructorId` = `employees_table`.`EmpKey`
+    WHERE employees_table.EmpKey='$ins_id'
+    GROUP BY SubjectCode";
+        
+        $queryResult = $this->getConnection()->query($sql);
+       
+        return mysqli_num_rows($queryResult);
+    }
+    
+    public function countTopicOfIns($ins_id)
+    {
+        $sql = "SELECT `topic_table`.*
+FROM `topic_table` 
+	LEFT JOIN `employees_table` ON `topic_table`.`InstructorId` = `employees_table`.`EmpKey`
+    WHERE employees_table.EmpKey='$ins_id'
+    GROUP BY topic_table.TopicNo";
+        
+        $queryResult = $this->getConnection()->query($sql);
+        
+        return mysqli_num_rows($queryResult);
+       
+    }
+    
+    public function countMaterialsOfIns($ins_id)
+    {
+        $sql = "SELECT `learningmaterials_table`.*
+FROM learningmaterials_table 
+	LEFT JOIN topic_table ON learningmaterials_table.TopicId = topic_table.TopicNo
+    WHERE topic_table.InstructorId='$ins_id'
+    GROUP BY learningmaterials_table.MaterialNo";
+        
+        $queryResult = $this->getConnection()->query($sql);
+        
+        return mysqli_num_rows($queryResult);
+        
+    }
+    
+    public function countQuizOfIns($ins_id)
+    {
+        $sql = "SELECT `quiz_table`.* FROM quiz_table LEFT JOIN topic_table ON quiz_table.TopicId = topic_table.TopicNo WHERE topic_table.InstructorId='$ins_id' GROUP BY quiz_table.QuizNo";
+        
+        $queryResult = $this->getConnection()->query($sql);
+        
+        return mysqli_num_rows($queryResult);
+        
+    }
 }

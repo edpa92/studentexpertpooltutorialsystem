@@ -29,6 +29,8 @@ if (!isset($_SESSION["loggedinSEPTS"])) {
     
     
     
+    
+    
 require_once("views/header.php");
 require_once("views/navi.php");
 ?>
@@ -190,22 +192,6 @@ require_once("views/navi.php");
                                     For every Test/Quize you can view here the total combined score of every class section.
                                 </div>
                             </div>
-                            <!-- Area Chart 
-                            <div class="card shadow mb-4">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Area Chart
-                                    </h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas id="myAreaChart"></canvas>
-                                    </div>
-                                    <hr>
-                                    Styling for the area chart can be found in the
-                                    <code>/js/demo/chart-area-demo.js</code> file.
-                                </div>
-                            </div>
--->
                             
 
                         </div>
@@ -225,8 +211,6 @@ require_once("views/navi.php");
         	  	
         	var quizesXLabel=[];
         	var datasets_data=[];
-        	
-        	
         	
         	
         	<?php 	
@@ -292,7 +276,200 @@ require_once("views/navi.php");
  <?php } 
         	?>
         </script>	
-  <?php }?>
+  <?php }elseif (isset($_SESSION["RoleSEPTS"]) && $_SESSION["RoleSEPTS"] == "Admin") { ?>
+	
+	<!-- Content Row -->
+	<div class="container">
+                    <div class="row">
+                    	<div class="col-lg-12 p-2">
+                        	<div class="dropdown w-100 mb-1">
+                              <button class="btn btn-secondary dropdown-toggle dropend" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Select School Year to Generate Reports (SY)
+                              </button>
+                              <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="index.php">-- School Year --</a></li>
+                                <?php 
+                                    $sy=$syM->getAllSY();
+                                    if (!is_null($sy)) {
+                                        while ($rowsy=$sy->fetch_assoc()) {?>                                            
+                               			 <li><a class="dropdown-item" href="index.php?sy=<?=($rowsy['SYCode']);?>">School Year: <?=($rowsy['YearStart']."-".$rowsy['YearEnd']);?></a></li>
+                                 <?php  }
+                                    }
+                                ?>
+                              </ul>
+                            </div>                            	
+                         </div>
+                    <!-- Donut Chart -->
+                        <div class="col-xl-4 col-lg-5">                        	
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Student Population<?php 
+                                    $sy=$syM->getAllSY();
+                                    if (!is_null($sy)) {
+                                        while ($rowsy=$sy->fetch_assoc()) {?> 
+                            			<em class="float-end <?=(isset($_GET['sy'])&&$_GET['sy']==$rowsy['SYCode']?"d-block":"d-none");?>"> SY: <?=($rowsy['YearStart']."-".$rowsy['YearEnd']);?></em>
+                                     <?php  }
+                                        }
+                                    ?>                                    
+                                    </h6>
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-pie pt-4">
+                                        <canvas id="myPieChartAdmin"></canvas>
+                                    </div>
+                                    <hr>
+                                    # of Students per Class Section                                
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-8 col-lg-7">
+                                    <!-- Bar Chart -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Instructors Teaching Tracker<?php 
+                                    $sy=$syM->getAllSY();
+                                    if (!is_null($sy)) {
+                                        while ($rowsy=$sy->fetch_assoc()) { ?> 
+                            			<em class="float-end <?=(isset($_GET['sy'])&&$_GET['sy']==$rowsy['SYCode']?"d-block":"d-none");?>"> SY: <?=($rowsy['YearStart']."-".$rowsy['YearEnd']); ?></em>
+                                     <?php  }
+                                        }
+                                    ?>
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-bar">
+                                        <canvas id="myBarChartAdmin"></canvas>
+                                    </div>
+                                    <hr>
+                                    <small>For every Instructor you can view here the total number of load/posted/created Subjects, Topic, Quizes & Instructional Materials(IMs).</small>
+                                </div>
+                            </div>
+                            
+
+                        </div>
+
+                        
+                </div>
+
+      </div>
+                <!-- /.container-fluid -->
+			
+		<script>
+        	var pieData=[];
+        	var pieLabel=[];
+        	var pieBG=[];
+        	var pieBGHover=[];
+        	
+        	  	
+        	var quizesXLabel=[];
+        	var datasets_data=[];
+        	
+        	
+        	<?php 	
+        	if (isset($_GET['sy'])&&$_GET['sy']!="") {          
+        	    $piechart_data=$insM->generatePieChartReport(0, $_GET['sy']);
+              if (!is_null($piechart_data)) {
+              while ($rowPie=$piechart_data->fetch_assoc()) {
+             ?>         
+                	pieData.push('<?=($rowPie['StudCount']);?>');
+                	pieLabel.push('<?=($rowPie['Section']);?>');
+                	pieBG.push('<?=($insM->rand_color());?>');
+                	pieBGHover.push('<?=($insM->rand_color());?>');
+           <?php }
+              }
+              
+              
+              
+              $barXLabel_data=$insM->getAll();
+              if (!is_null($barXLabel_data)) {
+                  while ($rowLine=$barXLabel_data->fetch_assoc()) { ?>                      
+                      quizesXLabel.push("<?=($rowLine['EmpId']."-".$rowLine['Firstname']." ".$rowLine['MI']." ".$rowLine['Lastname']);?>");
+             <?php }
+              } ?>
+              
+              
+              var maxY=0;
+              
+              var colorSubject='<?=($insM->rand_color());?>';
+              var colorTopic='<?=($insM->rand_color());?>';
+              var colorQuiz='<?=($insM->rand_color());?>';
+              var colorIMS='<?=($insM->rand_color());?>';
+              
+              var newData = [
+              <?php 
+              $maxY=0; ?>
+             
+                  {                  
+                    label: "Subject",
+                    backgroundColor: colorSubject,
+                    hoverBackgroundColor: colorSubject,
+                    borderColor: colorSubject,
+                    data: [<?php $barXLabel_data=$insM->getAll();
+                          if (!is_null($barXLabel_data)) {
+                              while ($rowSUb=$barXLabel_data->fetch_assoc()) { 
+                                  $subCount=$insM->countSubOfIns($rowSUb['EmpKey']);
+                                  echo $subCount.',';
+                              }
+                          } ?>],
+                  },
+                  
+                  {                  
+                    label: "Topic",
+                    backgroundColor: colorTopic,
+                    hoverBackgroundColor: colorTopic,
+                    borderColor: colorTopic,
+                    data: [<?php $barXLabel_data=$insM->getAll();
+                          if (!is_null($barXLabel_data)) {
+                              while ($rowSUb=$barXLabel_data->fetch_assoc()) { 
+                                  $Count=$insM->countTopicOfIns($rowSUb['EmpKey']);
+                                  echo $Count.',';
+                              }
+                          } ?>],
+                  },
+                  
+                  {                  
+                    label: "Quizes",
+                    backgroundColor: colorQuiz,
+                    hoverBackgroundColor: colorQuiz,
+                    borderColor: colorQuiz,
+                    data: [<?php $barXLabel_data=$insM->getAll();
+                          if (!is_null($barXLabel_data)) {
+                              while ($rowSUb=$barXLabel_data->fetch_assoc()) { 
+                                  $Count=$insM->countQuizOfIns($rowSUb['EmpKey']);
+                                  echo $Count.',';
+                              }
+                          } ?>],
+                  },                  
+                  {                  
+                    label: "IMs",
+                    backgroundColor: colorIMS,
+                    hoverBackgroundColor: colorIMS,
+                    borderColor: colorIMS,
+                    data: [<?php $barXLabel_data=$insM->getAll();
+                          if (!is_null($barXLabel_data)) {
+                              while ($rowSUb=$barXLabel_data->fetch_assoc()) { 
+                                  $Count=$insM->countMaterialsOfIns($rowSUb['EmpKey']);
+                                  echo $Count.',';
+                              }
+                          } ?>],
+                  },
+                 
+            ];
+            
+              		maxY=<?=($maxY);?>;
+                    for (var i = 0; i < newData.length; i++) {
+                      datasets_data.push(newData[i]);
+                    }      
+       <?php } 
+        	?>
+        </script>	
+<?php }?>
+  
+  
+  
  </div>
 <?php 
 require_once("views/footer.php");    

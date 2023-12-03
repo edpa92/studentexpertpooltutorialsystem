@@ -10,9 +10,8 @@
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
           <?php if($_SESSION["RoleSEPTS"]=="Admin"){
           ?>
-          <li><a href="#" class="nav-link px-2 link-body-emphasis">Dashboard</a></li>
+          <li><a href="index.php" class="nav-link px-2 link-body-emphasis">Dashboard</a></li>
           <li><a href="UserManagment.php" class="nav-link px-2 link-body-emphasis">User Management</a></li>
-          <li><a href="#" class="nav-link px-2 link-body-emphasis">Materials</a></li>
           <li><a href="Setup.php" class="nav-link px-2 link-body-emphasis">System setup</a></li>
           <?php }?>
           
