@@ -344,14 +344,52 @@ require_once("views/navi.php");
                                         <canvas id="myBarChartAdmin"></canvas>
                                     </div>
                                     <hr>
-                                    <small>For every Instructor you can view here the total number of load/posted/created Subjects, Topic, Quizes & Instructional Materials(IMs).</small>
+                                    <p>For every Instructor you can view here the total number of load/posted/created Subjects, Topic, Quizes & Instructional Materials(IMs).</p>
                                 </div>
                             </div>
-                            
-
                         </div>
-
                         
+                        <div class="col-md-12 ">
+                        	<div class="card shadow mb-4">
+                              <div class="card-header">
+                                Instructor Teaching Progresss
+                              </div>
+                              <div class="card-body">
+                              
+                        <?php if (isset($_GET['sy'])&&$_GET['sy']!="") {
+                            ?>
+                                <table class="table">
+                                  <thead>
+                                    <tr>
+                                      <th style="width:25%">Instructor</th>
+                                      <th style="width:75%">Progress</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                  <?php 
+                                      $ins=$insM->getAll();
+                                      if (!is_null($ins)) {
+                                          while ($rowIns=$ins->fetch_assoc()) { ?>                                      
+                                    <tr>
+                                      <td><?=($rowIns['Firstname'].' '.$rowIns['MI'].'. '.$rowIns['Lastname']);?></td>
+                                      <td>
+                                      <?php 
+                                      $per=$insM->computeProgress($rowIns['EmpKey'],isset($_GET['sy'])&&$_GET['sy']!=""?$_GET['sy']:0);
+                                      
+                                      ?>
+                                          <div style="height: 25px" class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="<?=($per->TotalPercentageProgress)?>" aria-valuemin="0" aria-valuemax="100">
+                                              <div class="progress-bar progress-bar-striped progress-bar-animated overflow-visible text-dark" style="width: <?=($per->TotalPercentageProgress)?>%"><?=($per->TotalPercentageProgress)?>% - <?=($per->Progress)?></div>
+                                        </div>
+									  </td>
+                                    </tr>
+                                    <?php }
+                                          } ?>
+                                  </tbody>
+                                </table>                                
+                        	<?php }?>
+                              </div>
+                            </div>
+                        </div>
                 </div>
 
       </div>

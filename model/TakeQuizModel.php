@@ -8,9 +8,9 @@ class TakeQuizModel extends DbConnection{
 	}
 	
 	
-	public function addTQ($id, $StudentId,$QuizId,$DateTaken,$Status, $Duration)
+	public function addTQ($id, $StudentId,$QuizId,$DateTaken,$Status, $Duration, $SYId)
     {  	
-	    	$sql = "INSERT INTO `take_table`( `StudentId`, `QuizId`, `DateTaken`,  `Status`, `DurationMinutes`) VALUES ('$StudentId','$QuizId','$DateTaken','$Status', '$Duration')";
+	    	$sql = "INSERT INTO `take_table`( `StudentId`, `QuizId`, `DateTaken`,  `Status`, `DurationMinutes`, `SYId`) VALUES ('$StudentId','$QuizId','$DateTaken','$Status', '$Duration', '$SYId')";
 	        
 	    	return $this->getConnection()->query($sql)?$this->getConnection()->insert_id:0;    	
     }

@@ -13,6 +13,7 @@
           <li><a href="index.php" class="nav-link px-2 link-body-emphasis">Dashboard</a></li>
           <li><a href="UserManagment.php" class="nav-link px-2 link-body-emphasis">User Management</a></li>
           <li><a href="Setup.php" class="nav-link px-2 link-body-emphasis">System setup</a></li>
+          <li><a href="ProgressBasis.php" class="nav-link px-2 link-body-emphasis">Progress Basis</a></li>
           <?php }?>
           
           <?php if($_SESSION["RoleSEPTS"]=="Instructor"){

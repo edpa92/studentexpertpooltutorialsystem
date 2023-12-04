@@ -18,6 +18,10 @@
     require_once ('model/TakeQuizModel.php');
     $TQO=new TakeQuizModel();
     
+    
+    require_once ('model/SectionModel.php');
+    $secM=new SectionModel();
+    
     $qid=0;
     $take_id=0;
     
@@ -33,7 +37,7 @@
             $quizid, 
             $TQO->getCurrentDate(), 
             1,
-            $duration); 
+            $duration, $secM->getTopSY()); 
         
         if ($takeid>0 && count($_POST['questionid'])>0) {
             $totalPoints=0;
