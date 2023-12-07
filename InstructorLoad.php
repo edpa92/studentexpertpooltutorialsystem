@@ -27,6 +27,7 @@ session_start();
     	<h4>Class Sections Load </h4>
     	<small>These are the class section(s) that can view learning Materials you have posted.</small>        
         <a href="InstructorLoadAdd.php" class="btn btn-primary float-end">Add</a>
+        <div class="table-responsive">
         <table class="table">
           <thead>
             <tr>
@@ -40,11 +41,12 @@ session_start();
           if (!is_null($insLoad)) {
               while ($row=$insLoad->fetch_assoc()) { ?>                  
             <tr>
-              <td><?=($row['Section'])?></td>
-              <td>
+              <td ><?=($row['Section'])?></td>
+              <td >
               <form method="post">
               	<input type="hidden" name="loadid" value="<?=($row['LoadId'])?>">
-              <button type="submit" class="btn btn-primary removeload">Remove</button>
+              <a class="btn btn-primary btn-sm m-1" href="StudentList.php?secid=<?=($row['SectionId'])?>">View Students</a>
+              	<button type="submit" class="btn btn-primary btn-sm removeload">Remove</button>
               </form>
               </td>
             </tr>
@@ -53,6 +55,7 @@ session_start();
           ?>
           </tbody>
         </table>
+        </div>
     </div>
 <?php 
 require_once("views/footer.php");    

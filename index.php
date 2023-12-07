@@ -378,7 +378,7 @@ require_once("views/navi.php");
                                       
                                       ?>
                                           <div style="height: 25px" class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="<?=($per->TotalPercentageProgress)?>" aria-valuemin="0" aria-valuemax="100">
-                                              <div class="progress-bar progress-bar-striped progress-bar-animated overflow-visible text-dark" style="width: <?=($per->TotalPercentageProgress)?>%"><?=($per->TotalPercentageProgress)?>% - <?=($per->Progress)?></div>
+                                              <div class="progress-bar progress-bar-striped progress-bar-animated overflow-visible text-dark" style="width: <?=($per->TotalPercentageProgress)?>%"><?=($per->TotalPercentageProgress)?>% - <?=($per->Progress)?> <?=($per->TotalStudPassers)?>Passers/<?=($per->TotalNumberOfStudent)?>Total Students</div>
                                         </div>
 									  </td>
                                     </tr>

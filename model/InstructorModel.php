@@ -225,7 +225,7 @@ FROM `student_table`
         }
         
 
-        return new Progress($ProgStr, $totalPer, $TotalNumOfStudents);
+        return new Progress($ProgStr, $totalPer, $TotalNumOfStudents, $studPassers);
     }
 
 }
