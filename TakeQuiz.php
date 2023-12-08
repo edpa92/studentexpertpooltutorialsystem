@@ -37,7 +37,8 @@
             $quizid, 
             $TQO->getCurrentDate(), 
             1,
-            $duration, $secM->getTopSY()); 
+            $duration,
+            $secM->getTopSY()['SYCode']); 
         
         if ($takeid>0 && count($_POST['questionid'])>0) {
             $totalPoints=0;
