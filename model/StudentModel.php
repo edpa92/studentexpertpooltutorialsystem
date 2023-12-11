@@ -70,7 +70,18 @@ class StudentModel extends DbConnection{
         return $this->getConnection()->query($sql);
     }
     
-    
+     public function getAllStudentsPerSec($sec_id)
+    {
+        $sql = "SELECT `student_table`.*, `studsection_table`.*, `section_table`.`Section` FROM `student_table` LEFT JOIN `studsection_table` ON `studsection_table`.`StudentId` = `student_table`.`StudentId` LEFT JOIN `section_table` ON `studsection_table`.`SectionId` = `section_table`.`SectionId` WHERE `studsection_table`.`SectionId`='$sec_id'";
+        
+        $queryResult = $this->getConnection()->query($sql);
+        
+        if (mysqli_num_rows($queryResult) > 0) {
+            return $queryResult;
+        }
+        
+        return null;
+    }
     
     
     public function StudentEmailExist($email)

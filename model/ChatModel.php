@@ -128,7 +128,7 @@ FROM `message_table`
             $sql = "UPDATE `message_table` SET `Viewed`='1' WHERE `ChatId`='$chat_id' AND `message_table`.`SenderStudent` IS NOT NULL";
         }elseif ($insid==0){
             
-            $sql = "UPDATE `message_table` SET `Viewed`='1' WHERE `ChatId`='2' AND `message_table`.`SenderIns` IS NOT NULL";
+            $sql = "UPDATE `message_table` SET `Viewed`='1' WHERE `ChatId`='$chat_id' AND `message_table`.`SenderIns` IS NOT NULL";
             
         }
         
@@ -170,7 +170,7 @@ WHERE chat_table.InstructorId='$ins_id' AND (message_table.SenderStudent IS NOT 
     FROM `chat_table` 
     LEFT JOIN `message_table` ON `message_table`.`ChatId` = `chat_table`.`ChatId` 
     LEFT JOIN `student_table` ON chat_table.StudentId = student_table.StudentId 
-    WHERE chat_table.InstructorId='$ins_id' AND (message_table.SenderStudent IS NOT NULL) GROUP BY chat_table.ChatId";
+    WHERE chat_table.InstructorId='$ins_id'  GROUP BY chat_table.ChatId ORDER BY Unviewed DESC";
             }
         
         }elseif ($studid!=0) {
@@ -187,11 +187,9 @@ WHERE chat_table.StudentId='$studid' AND (message_table.SenderIns IS NOT NULL AN
     FROM `chat_table` 
     LEFT JOIN `message_table` ON `message_table`.`ChatId` = `chat_table`.`ChatId` 
     LEFT JOIN employees_table ON chat_table.InstructorId = employees_table.EmpKey 
-    WHERE chat_table.StudentId='$studid' AND (message_table.SenderIns IS NOT NULL) GROUP BY chat_table.ChatId";
+    WHERE chat_table.StudentId='$studid'  GROUP BY chat_table.ChatId ORDER BY Unviewed DESC";
             }
         }
-        
-        
         
         $queryResult = $this->getConnection()->query($sql);
         

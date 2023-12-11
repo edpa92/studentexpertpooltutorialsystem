@@ -23,6 +23,9 @@ $matO=new MaterialsModel();
 require_once ('model/QuizModel.php');
 $QO=new QuizModel();
 
+require_once ('model/TakeQuizModel.php');
+$tqM=new TakeQuizModel();
+
 $matid=0;
 $mat=null;
 $qid=0;
@@ -40,11 +43,26 @@ if ($ins->isRequestPost()) {
         $total=$matO->escapeString($_POST['totalitem']);
         $statusq=$matO->escapeString($_POST['statusq']);
         $currentDate = $QO->getCurrentDate();
+        $retake=isset($_POST['retake'])?1:0;
         
-        $quizid=$QO->addEditQuiz($qid, $matid, $currentDate, $passing, $total, $statusq, $topicid);
+        $quizid=$QO->addEditQuiz($qid, $matid, $currentDate, $passing, $total, $statusq, $topicid, $retake);
         
         
         $quiz_has_been_taken=$QO->isQuizTaken($qid);
+        
+        if ($quiz_has_been_taken && $quizid) {
+            $takes=$tqM->getAllTQ($qid);
+            if (!is_null($takes)) {
+                while ($rowTake=$takes->fetch_assoc()) {
+                    $tq_id=$rowTake['TakeNo'];
+                    $takescore=$rowTake['TotalScore'];
+                    $PassingScore=($total*($passing/100));
+                    
+                    $tqM->editScoreTQ($tq_id, $takescore, $PassingScore, ($takescore>=$PassingScore?"Passed":"Failed"));
+                    
+                }
+            }
+        }
         
         if (!is_bool($quizid)&&$quizid>0) {
             if (isset($_POST['question']) && count($_POST['question'])>0) {
@@ -164,14 +182,6 @@ require_once("views/navi.php");
           	<small>How many Points:</small>
             <input type="number" name="points[]" class="form-control pointstxt" placeholder="How many Points"  required="required">
           </div>
-<!--           <div class="col">
-          	<small>Status:</small>                    
-            <select id="status" name="status[]" class="form-select" required="required">
-              <option value="" selected>Choose Status...</option>
-              <option  value="1">Active</option>
-              <option value="0">Inactive</option>
-            </select>
-          </div>                               -->
         </div>
         <hr>
     </div>
@@ -195,7 +205,8 @@ require_once("views/navi.php");
                           <h4><?=($mat['Title'])?>
                           <i class="bi bi-box-arrow-in-up-right"></i></h4>
                         </a>
-                        <h5 class="card-title">(<?=($mat['Subject'])?>) <?=($mat['TopicDescription'])?></h5><div class="row g-3 mt-1">
+                        <h5 class="card-title">(<?=($mat['Subject'])?>) <?=($mat['TopicDescription'])?></h5>
+                        <div class="row g-3 mt-1">
                           <div class="col">
                           <small>Percentage Passing (%)</small>                            
                         	<input value="<?=(!is_null($qui)?$qui['PercentagePassing']:"")?>" name="passing" type="number" step=".01" class="form-control" placeholder="0.0 %" required="required">
@@ -211,9 +222,14 @@ require_once("views/navi.php");
                               <option  value="1" <?=(!is_null($qui)&&$qui['Status']=="1"?"Selected":"");?>>Active</option>
                               <option value="0" <?=(!is_null($qui)&&$qui['Status']=="0"?"Selected":"");?>>Inactive</option>
                             </select>
-                          </div>
-                                                        
+                          </div>                    
                         </div>
+                          <div class="form-check mt-3 ">
+                              <input value="1" class="form-check-input" type="checkbox" id="retake" name="retake" <?=(!is_null($qui)&&$qui['Retaking']=="1"?"Checked":"");?>>
+                              <label class="form-check-label" for="retake">
+                                <strong>Allow students to Retake this Quiz more than once?</strong>
+                              </label>
+                          </div>
                       </div>
                     </div>           			
             	</div>      

@@ -10,10 +10,10 @@
         <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
           <?php if($_SESSION["RoleSEPTS"]=="Admin"){
           ?>
-          <li><a href="#" class="nav-link px-2 link-body-emphasis">Dashboard</a></li>
+          <li><a href="index.php" class="nav-link px-2 link-body-emphasis">Dashboard</a></li>
           <li><a href="UserManagment.php" class="nav-link px-2 link-body-emphasis">User Management</a></li>
-          <li><a href="#" class="nav-link px-2 link-body-emphasis">Materials</a></li>
           <li><a href="Setup.php" class="nav-link px-2 link-body-emphasis">System setup</a></li>
+          <li><a href="ProgressBasis.php" class="nav-link px-2 link-body-emphasis">Progress Basis</a></li>
           <?php }?>
           
           <?php if($_SESSION["RoleSEPTS"]=="Instructor"){
@@ -21,7 +21,7 @@
               $current_url=$_SERVER["REQUEST_URI"];
               
           ?>
-          <li><a href="#" class="nav-link px-2 link-body-emphasis">Dashboard</a></li>
+          <li><a href="index.php" class="nav-link px-2 link-body-emphasis">Dashboard</a></li>
           <li><a href="InstructorLoad.php" class="nav-link px-2 link-body-emphasis">Load</a></li>
           <li><a href="LearningMaterials.php" class="nav-link px-2 link-body-emphasis">Materials</a></li>
           <li><a href="Quizes.php" class="nav-link px-2 link-body-emphasis">Quizes</a></li>
@@ -31,7 +31,9 @@
               <a id="msg_menu" title="Unview/unopen Message" href="#" class="nav-link px-2 link-body-emphasis" data-bs-toggle="dropdown" aria-expanded="false">
              	Messages<span class="badge text-bg-danger" id="unread_span"><?=($_SESSION["unread_msg"]==0?"":$_SESSION["unread_msg"]); ?></span>
              </a>
-              <ul id="messageul" class="dropdown-menu text-small">  
+              <ul id="messageul" class="dropdown-menu text-small">
+                    <li><hr class="dropdown-divider"></li>
+                   <li><a class="dropdown-item" href="Chats.php">See all</a></li>  
               </ul>
             </div>
          </li>
@@ -42,12 +44,15 @@
              
           ?>
           <li><a href="index.php" class="nav-link px-2 link-body-emphasis">Home</a></li>
+          <li><a href="StudentQuizes.php" class="nav-link px-2 link-body-emphasis">Quizes</a></li>
           <li class="<?=(strpos($current_url, "Chats.php")||strpos($current_url, "chats.php") !== false?"d-none":"")?>">        	 
              <div class="dropdown text-end">
               <a id="msg_menu" title="Unview/unopen Message" href="#" class="nav-link px-2 link-body-emphasis" data-bs-toggle="dropdown" aria-expanded="false">
              	Messages<span class="badge text-bg-danger" id="unread_span"><?=($_SESSION["unread_msg"]==0?"":$_SESSION["unread_msg"]); ?></span>
              </a>
-              <ul id="messageul" class="dropdown-menu text-small ">      
+              <ul id="messageul" class="dropdown-menu text-small ">  
+                  <li><hr class="dropdown-divider"></li>
+                  <li><a class="dropdown-item" href="Chats.php">See all</a></li>    
               </ul>
             </div>
         </li>

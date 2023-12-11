@@ -8,9 +8,9 @@ class TakeQuizModel extends DbConnection{
 	}
 	
 	
-	public function addTQ($id, $StudentId,$QuizId,$DateTaken,$Status, $Duration)
+	public function addTQ($id, $StudentId,$QuizId,$DateTaken,$Status, $Duration, $SYId)
     {  	
-	    	$sql = "INSERT INTO `take_table`( `StudentId`, `QuizId`, `DateTaken`,  `Status`, `DurationMinutes`) VALUES ('$StudentId','$QuizId','$DateTaken','$Status', '$Duration')";
+	    	$sql = "INSERT INTO `take_table`( `StudentId`, `QuizId`, `DateTaken`,  `Status`, `DurationMinutes`, `SYId`) VALUES ('$StudentId','$QuizId','$DateTaken','$Status', '$Duration', '$SYId')";
 	        
 	    	return $this->getConnection()->query($sql)?$this->getConnection()->insert_id:0;    	
     }
@@ -78,4 +78,23 @@ FROM `take_table`
         return null;
     }
 	
+    public function getAllSUMTOTALSCOREPERSEC($sy_id, $quiz_id, $sec)
+    {
+        $sql = "SELECT SUM(`take_table`.`TotalScore`) SUMTOTALSCORESEC, section_table.Section, take_table.QuizId
+FROM `take_table`
+LEFT JOIN student_table on take_table.StudentId=student_table.StudentId
+LEFT JOIN studsection_table on student_table.StudentId=studsection_table.StudentId
+LEFT JOIN section_table on studsection_table.SectionId=section_table.SectionId
+WHERE studsection_table.SYId='$sy_id' AND take_table.QuizId='$quiz_id' AND section_table.Section='$sec'
+GROUP BY section_table.SectionId";
+        
+        $queryResult = $this->getConnection()->query($sql);
+        
+        if (mysqli_num_rows($queryResult) > 0) {
+            return $queryResult;
+        }
+        
+        return null;
+    }
+    
 }
