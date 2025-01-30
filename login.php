@@ -32,11 +32,16 @@ if ($user->isRequestPost()) {
 ?>
   <div class="mb-3">
     <label for="exampleInputEmail1" class="form-label">Username</label>
+
     <input name="uname" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
   </div>
   <div class="mb-3">
-    <label for="exampleInputPassword1" class="form-label">Password</label>
-    <input name="password" type="password" class="form-control" id="exampleInputPassword1">
+    <label for="exampleInputPassword1" class="form-label">Password</label><br>
+    <div class="password-container  w-100">
+    <input name="password" type="password" class="form-control w-100" id="exampleInputPassword1">
+    <span class="toggle-password" id="toggle-password-hide">🫣</span>
+    <span class="toggle-password" id="toggle-password-view">🤓</span>
+    </div>
   </div>
   <div class="d-grid gap-2">
   <button type="submit" class="btn btn-primary">Login</button>
@@ -46,4 +51,4 @@ if ($user->isRequestPost()) {
 </div>
 <?php 
 require_once("views/footer.php");    
-?>
+?>y

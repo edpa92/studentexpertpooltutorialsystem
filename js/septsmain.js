@@ -1,5 +1,20 @@
 $(function(){
 	
+	$(".toggle-password").click(function(){
+		var passwordField = document.getElementById("exampleInputPassword1");
+        if (passwordField.type === "password") {
+            passwordField.type = "text";
+			$("#toggle-password-view").hide();
+			$("#toggle-password-hide").show();
+        } else {
+            passwordField.type = "password";
+			$("#toggle-password-view").show();
+			$("#toggle-password-hide").hide();
+        }
+    });
+	
+
+
 	setInterval(function() {
 	  $.ajax({
 	    url: 'api/MessageGetUnviewedCount.php',
@@ -83,7 +98,6 @@ $(function(){
 			  }
 		  });
 	}
-	
 	
 	
 	
